@@ -110,21 +110,45 @@ function toggleDropdown(index) {
       box-shadow: 0 4px 6px rgba(0,0,0,0.1);
       text-align: center;
       cursor: pointer;
-      transition: transform 0.3s ease;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Alternate background colors */
+    .team-member:nth-child(even) {
+      background: #f8fafc;
     }
 
     .team-member:hover {
       transform: translateY(-5px);
+      box-shadow: 0 8px 12px rgba(0,0,0,0.1);
     }
 
     .member-details {
       max-height: 0;
+      opacity: 0;
       overflow: hidden;
-      transition: max-height 0.3s ease;
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      padding: 0 1rem;
     }
 
     .member-details.active {
-      max-height: 200px; /* Adjust based on content */
+      max-height: 300px; /* Increased for smoother animation */
+      opacity: 1;
+      padding-top: 1rem;
+      margin-top: 1rem;
+      border-top: 1px solid #edf2f7;
+    }
+
+    .member-details a {
+      color: var(--emory-primary);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .member-details a:hover {
+      color: var(--emory-accent);
     }
 
     .member-info h2 {
@@ -167,7 +191,31 @@ function toggleDropdown(index) {
       members.forEach((member, index) => {
         member.addEventListener('click', () => {
           const details = member.querySelector('.member-details');
+          const wasActive = details.classList.contains('active');
+          
+          // Close all other open details
+          document.querySelectorAll('.member-details.active').forEach(detail => {
+            if (detail !== details) {
+              detail.classList.remove('active');
+            }
+          });
+
+          // Toggle the clicked details
           details.classList.toggle('active');
+          
+          // Scroll into view if opening and not fully visible
+          if (!wasActive) {
+            setTimeout(() => {
+              const rect = member.getBoundingClientRect();
+              const isFullyVisible = 
+                rect.top >= 0 &&
+                rect.bottom <= window.innerHeight;
+              
+              if (!isFullyVisible) {
+                member.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+              }
+            }, 100);
+          }
         });
       });
     });

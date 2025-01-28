@@ -93,7 +93,7 @@ const latestResearchPaper = await fetchLatestResearchPaper();
 
 	<style>
 		.hero {
-			background: linear-gradient(rgba(26, 32, 44, 0.85), rgba(26, 32, 44, 0.9)),
+			background: linear-gradient(rgba(1, 33, 105, 0.85), rgba(1, 33, 105, 0.9)),
 						url('/images/lab-background.jpg') center/cover;
 			height: 70vh;
 			display: flex;
@@ -132,37 +132,35 @@ const latestResearchPaper = await fetchLatestResearchPaper();
 			padding: 0.8rem 1.5rem;
 			border-radius: 4px;
 			text-decoration: none;
-			transition: background-color 0.3s ease;
+			transition: all 0.3s ease;
 			position: relative;
 			overflow: hidden;
 			display: inline-block;
-		}
-
-		.button::after {
-			content: '';
-			position: absolute;
-			top: 0;
-			left: 0;
-			width: 100%;
-			height: 100%;
-			background: rgba(255, 255, 255, 0.1);
-			transform: translateX(-100%);
-			transition: transform 0.3s ease;
-		}
-
-		.button:hover::after {
-			transform: translateX(0);
+			font-weight: 500;
 		}
 
 		.button.primary {
-			background-color: var(--accent);
+			background-color: var(--emory-accent);
 			color: white;
 		}
 
 		.button.secondary {
 			background-color: transparent;
-			border: 1px solid var(--accent);
-			color: var(--accent);
+			border: 2px solid white;
+			color: white;
+		}
+
+		.button:hover {
+			transform: translateY(-2px);
+		}
+
+		.button.primary:hover {
+			background-color: var(--emory-accent);
+			color: white;
+		}
+
+		.button.secondary:hover {
+			background-color: rgba(255, 255, 255, 0.1);
 		}
 
 		.mission {

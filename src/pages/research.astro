@@ -11,7 +11,9 @@ import Layout from '../layouts/Layout.astro';
       </div>
     </section>
 
-    <section class="research-area">
+    <div class="section-divider"></div>
+
+    <section id="genomics" class="research-area">
       <div class="container">
         <div class="research-content">
           <div class="text-content">
@@ -25,20 +27,17 @@ import Layout from '../layouts/Layout.astro';
             </ul>
           </div>
           <div class="image-container">
-            <!-- Add your image here -->
             <img src="/images/genomics-research.jpg" alt="Genomics Research Visualization" />
           </div>
         </div>
       </div>
     </section>
 
-    <section class="research-area alternate">
+    <div class="section-divider"></div>
+
+    <section id="pain" class="research-area alternate">
       <div class="container">
         <div class="research-content">
-          <div class="image-container">
-            <!-- Add your image here -->
-            <img src="/images/pain-research.jpg" alt="Pain Management Research" />
-          </div>
           <div class="text-content">
             <h2>Pain Management Research</h2>
             <p>We investigate the complex mechanisms behind chronic pain development in sickle cell disease. Our research examines how years of episodic pain crises can lead to permanent changes in pain signaling, particularly focusing on the role of microglial cells.</p>
@@ -49,11 +48,16 @@ import Layout from '../layouts/Layout.astro';
               <li>Transcriptome analysis</li>
             </ul>
           </div>
+          <div class="image-container">
+            <img src="/images/pain-research.jpg" alt="Pain Management Research" />
+          </div>
         </div>
       </div>
     </section>
 
-    <section class="research-area">
+    <div class="section-divider"></div>
+
+    <section id="biomarkers" class="research-area">
       <div class="container">
         <div class="research-content">
           <div class="text-content">
@@ -67,20 +71,17 @@ import Layout from '../layouts/Layout.astro';
             </ul>
           </div>
           <div class="image-container">
-            <!-- Add your image here -->
             <img src="/images/biomarker-research.jpg" alt="Biomarker Development" />
           </div>
         </div>
       </div>
     </section>
 
-    <section class="research-area alternate">
+    <div class="section-divider"></div>
+
+    <section id="gene-therapy" class="research-area alternate">
       <div class="container">
         <div class="research-content">
-          <div class="image-container">
-            <!-- Add your image here -->
-            <img src="/images/gene-therapy.jpg" alt="Gene Therapy Research" />
-          </div>
           <div class="text-content">
             <h2>Gene-Based Therapies</h2>
             <p>We're at the forefront of evaluating and improving gene therapy approaches for sickle cell disease. Our work includes investigating safety concerns, developing optimization strategies, and establishing new standards for cure definition.</p>
@@ -91,6 +92,9 @@ import Layout from '../layouts/Layout.astro';
               <li>Multi-site trial coordination</li>
             </ul>
           </div>
+          <div class="image-container">
+            <img src="/images/gene-therapy.jpg" alt="Gene Therapy Research" />
+          </div>
         </div>
       </div>
     </section>
@@ -98,24 +102,32 @@ import Layout from '../layouts/Layout.astro';
 
   <style>
     .page-header {
-      background: var(--accent);
+      background: var(--emory-primary);
       color: white;
-      padding: 6rem 2rem 4rem;
+      padding: 6rem 2rem 2rem;
       margin-top: 60px;
+      text-align: center;
     }
 
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 2rem;
+    .page-header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .section-divider {
+      height: 3rem;
+      background: #f5f5f7;
+      border-top: 1px solid #e5e7eb;
+      border-bottom: 1px solid #e5e7eb;
     }
 
     .research-area {
       padding: 4rem 0;
+      background: white;
     }
 
     .research-area.alternate {
-      background: #f5f5f7;
+      background: #f8fafc;
     }
 
     .research-content {
@@ -123,13 +135,17 @@ import Layout from '../layouts/Layout.astro';
       grid-template-columns: 1fr 1fr;
       gap: 4rem;
       align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
     }
 
     .image-container img {
-      width: 100%;
+      width: 65%;
       height: auto;
       border-radius: 8px;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      margin: 0 auto;
+      display: block;
     }
 
     .research-highlights {
@@ -146,7 +162,7 @@ import Layout from '../layouts/Layout.astro';
 
     .research-highlights li::before {
       content: "•";
-      color: var(--accent);
+      color: var(--emory-primary);
       font-weight: bold;
       position: absolute;
       left: 0;
