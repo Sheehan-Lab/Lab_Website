@@ -1,8 +1,28 @@
 ---
 import Layout from '../layouts/Layout.astro';
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+// Function to fetch the latest research paper from ORCID
+const fetchLatestResearchPaper = async () => {
+  try {
+    const response = await fetch(`https://pub.orcid.org/v3.0/0000-0003-2837-2255/works`, {
+      headers: {
+        'Accept': 'application/json'
+      }
+    });
+    const data = await response.json();
+    const latestWork = data.group[0]['work-summary'][0];
+    return {
+      title: latestWork.title.title.value,
+      summary: latestWork['journal-title']?.value || 'No summary available',
+      url: latestWork['external-ids']['external-id'].find(id => id['external-id-type'] === 'doi')?.['external-id-url']?.value || '#'
+    };
+  } catch (error) {
+    console.error('Error fetching latest research paper:', error);
+    return null;
+  }
+};
+
+const latestResearchPaper = await fetchLatestResearchPaper();
 ---
 
 <Layout title="Sheehan Lab | Sickle Cell Disease Research at Emory University">
@@ -12,8 +32,8 @@ import Layout from '../layouts/Layout.astro';
 				<h1>Sheehan Lab</h1>
 				<p class="subtitle">Advancing Sickle Cell Disease Research and Treatment</p>
 				<div class="hero-buttons">
-					<a href="/research" class="button primary">Our Research</a>
-					<a href="/publications" class="button secondary">Latest Publications</a>
+					<a href="/research" class="button primary">Explore Our Research</a>
+					<a href="/publications" class="button secondary">View Publications</a>
 				</div>
 			</div>
 		</section>
@@ -40,12 +60,12 @@ import Layout from '../layouts/Layout.astro';
 						<p>Investigating genetic factors in chronic pain development and biomarker research.</p>
 					</div>
 					<div class="highlight-card">
-						<div class="card-icon">��</div>
+						<div class="card-icon">🧪</div>
 						<h3>Biomarker Development</h3>
 						<p>Creating new methods to evaluate red cell function and therapy effectiveness.</p>
 					</div>
 					<div class="highlight-card">
-						<div class="card-icon">🧪</div>
+						<div class="card-icon">🧬</div>
 						<h3>Gene-Based Therapies</h3>
 						<p>Evaluating and improving gene therapy approaches for better patient outcomes.</p>
 					</div>
@@ -53,24 +73,19 @@ import Layout from '../layouts/Layout.astro';
 			</div>
 		</section>
 
-		<section class="latest-news">
+		<section class="latest-updates">
 			<div class="container">
 				<h2>Latest Updates</h2>
-				<div class="news-grid">
-					<div class="news-card featured">
-						<div class="news-content">
-							<span class="news-tag">Featured Research</span>
-							<h3>New Findings on GBT021601 and Pain Modification</h3>
-							<p>Recent research demonstrates promising results for pain management in sickle cell disease mouse models.</p>
-							<a href="/publications" class="read-more">Read More →</a>
+				<div class="updates-grid">
+					{latestResearchPaper ? (
+						<div class="update-card">
+							<h3>{latestResearchPaper.title}</h3>
+							<p>{latestResearchPaper.summary}</p>
+							<a href={latestResearchPaper.url} class="button primary">Read More</a>
 						</div>
-					</div>
-					<div class="news-card">
-						<span class="news-tag">Publication</span>
-						<h3>Latest Research Paper</h3>
-						<p>Investigating the impact of chronic transfusion therapy on pain behaviors.</p>
-						<a href="/publications" class="read-more">Read More →</a>
-					</div>
+					) : (
+						<p>No recent research papers available.</p>
+					)}
 				</div>
 			</div>
 		</section>
@@ -78,16 +93,20 @@ import Layout from '../layouts/Layout.astro';
 
 	<style>
 		.hero {
-			background: linear-gradient(rgba(1, 33, 105, 0.85), rgba(1, 33, 105, 0.9)),
+			background: linear-gradient(rgba(26, 32, 44, 0.85), rgba(26, 32, 44, 0.9)),
 						url('/images/lab-background.jpg') center/cover;
 			height: 70vh;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			text-align: center;
 			margin-top: 80px;
-			position: relative;
 		}
 
 		.hero-content {
 			max-width: 800px;
 			padding: 2rem;
+			color: #ffffff;
 			animation: fadeIn 1s ease-out;
 		}
 
@@ -101,34 +120,22 @@ import Layout from '../layouts/Layout.astro';
 			font-size: 1.5rem;
 			opacity: 0.9;
 			margin-bottom: 2rem;
+			color: #ffffff;
 		}
 
 		.hero-buttons {
-			display: flex;
-			gap: 1rem;
-			justify-content: center;
+			margin-top: 1.5rem;
 		}
 
 		.button {
-			display: inline-block;
-			padding: 1rem 2rem;
-			border-radius: 6px;
-			font-weight: 500;
+			margin: 0 0.5rem;
+			padding: 0.8rem 1.5rem;
+			border-radius: 4px;
 			text-decoration: none;
-			transition: all 0.2s;
+			transition: background-color 0.3s ease;
 			position: relative;
 			overflow: hidden;
-		}
-
-		.button.primary {
-			background: white;
-			color: var(--accent);
-		}
-
-		.button.secondary {
-			background: transparent;
-			border: 2px solid white;
-			color: white;
+			display: inline-block;
 		}
 
 		.button::after {
@@ -147,19 +154,26 @@ import Layout from '../layouts/Layout.astro';
 			transform: translateX(0);
 		}
 
-		.button:hover {
-			transform: translateY(-2px);
+		.button.primary {
+			background-color: var(--accent);
+			color: white;
+		}
+
+		.button.secondary {
+			background-color: transparent;
+			border: 1px solid var(--accent);
+			color: var(--accent);
 		}
 
 		.mission {
-			padding: 6rem 0;
-			background: white;
+			padding: 4rem 2rem;
+			background: #f8fafc;
+			text-align: center;
 		}
 
 		.container {
-			max-width: 1200px;
+			max-width: 800px;
 			margin: 0 auto;
-			padding: 0 2rem;
 		}
 
 		.research-highlights {
@@ -199,53 +213,23 @@ import Layout from '../layouts/Layout.astro';
 			margin-bottom: 1rem;
 		}
 
-		.latest-news {
-			padding: 6rem 0;
+		.latest-updates {
+			padding: 4rem 2rem;
+			background: #ffffff;
 		}
 
-		.news-grid {
+		.updates-grid {
 			display: grid;
-			grid-template-columns: 2fr 1fr;
+			grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
 			gap: 2rem;
-			margin-top: 3rem;
 		}
 
-		.news-card {
-			background: white;
+		.update-card {
+			background: #f8fafc;
 			padding: 2rem;
 			border-radius: 8px;
 			box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-			animation: slideIn 0.5s ease-out;
-			animation-fill-mode: both;
-		}
-
-		.news-card:nth-child(2) { animation-delay: 0.2s; }
-
-		.news-card.featured {
-			background: linear-gradient(135deg, var(--emory-primary), var(--emory-accent));
-			color: white;
-		}
-
-		.news-card.featured h3,
-		.news-card.featured p {
-			color: white;
-		}
-
-		.news-tag {
-			display: inline-block;
-			padding: 0.5rem 1rem;
-			background: rgba(255, 255, 255, 0.1);
-			border-radius: 20px;
-			font-size: 0.9rem;
-			margin-bottom: 1rem;
-		}
-
-		.read-more {
-			display: inline-block;
-			margin-top: 1rem;
-			color: inherit;
-			text-decoration: none;
-			font-weight: 500;
+			text-align: center;
 		}
 
 		@media (max-width: 768px) {
@@ -255,10 +239,6 @@ import Layout from '../layouts/Layout.astro';
 
 			.subtitle {
 				font-size: 1.2rem;
-			}
-
-			.news-grid {
-				grid-template-columns: 1fr;
 			}
 
 			.hero-buttons {
@@ -273,28 +253,6 @@ import Layout from '../layouts/Layout.astro';
 		/* Add a subtle parallax effect to the hero */
 		.hero {
 			background-attachment: fixed;
-		}
-
-		/* Enhance button hover effects */
-		.button {
-			position: relative;
-			overflow: hidden;
-		}
-
-		.button::after {
-			content: '';
-			position: absolute;
-			top: 0;
-			left: 0;
-			width: 100%;
-			height: 100%;
-			background: rgba(255, 255, 255, 0.1);
-			transform: translateX(-100%);
-			transition: transform 0.3s ease;
-		}
-
-		.button:hover::after {
-			transform: translateX(0);
 		}
 
 		/* Add hover effect to cards */

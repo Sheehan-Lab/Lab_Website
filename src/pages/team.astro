@@ -2,15 +2,52 @@
 import Layout from '../layouts/Layout.astro';
 
 const teamMembers = [
-  {
-    name: "Dr. Vivien Sheehan",
-    role: "Principal Investigator",
-    image: "/images/team/leader.jpg",
-    bio: "Dr. Sheehan's research focuses on developing new therapies for individuals living with sickle cell disease, combining genomics, clinical research, and innovative biomarker development.",
-    specialties: ["Sickle Cell Disease", "Genomics", "Clinical Research"]
+  { 
+    name: "Dr. Vivien Sheehan", 
+    role: "Principal Investigator", 
+    bio: "Placeholder bio for Dr. Vivien Sheehan.",
+    email: "vivien.sheehan@emory.edu"
   },
-  // Add more team members here
+  { 
+    name: "Britney Hernandez", 
+    role: "Lab Manager", 
+    bio: "Placeholder bio for Britney Hernandez.",
+    email: "britney.hernandez@emory.edu"
+  },
+  { name: "Dr. Justin Yoo MD", role: "Clinical Instructor", bio: "Placeholder bio for Dr. Justin Yoo.", email: "justin.yoo@emory.edu" },
+  { name: "Dr. Kennedy Goldsborough PhD", role: "Postdoctoral Researcher", bio: "Placeholder bio for Dr. Kennedy Goldsborough.", email: "kennedy.goldsborough@emory.edu" },
+  { name: "Dr. Ashwin Patel MBBS, PhD", role: "Associate Professor", bio: "Placeholder bio for Dr. Ashwin Patel.", email: "ashwin.patel@emory.edu" },
+  { 
+    name: "Ugochukwu Agbakwuru", 
+    role: "Pediatric Hematology/Oncology Fellow", 
+    bio: "Placeholder bio for Ugochukwu Agbakwuru.",
+    email: "ugo.agbakwuru@emory.edu"
+  },
+ 
+  { name: "Erica Evans", role: "Consultant", bio: "Placeholder bio for Erica Evans.", email: "erica.evans@emory.edu" },
+  { name: "Kirandeep Raina", role: "Research Manager", bio: "Placeholder bio for Kirandeep Raina.", email: "kirandeep.raina@emory.edu" },
+  { name: "Mary Aliche", role: "Research Specialist", bio: "Placeholder bio for Mary Aliche.", email: "mary.aliche@emory.edu" },
+  { name: "Kathleen Romero", role: "Research Specialist", bio: "Placeholder bio for Kathleen Romero.", email: "kathleen.romero@emory.edu" },
+  { name: "Jedidah Titus", role: "Research Specialist", bio: "Placeholder bio for Jedidah Titus.", email: "jedidah.titus@emory.edu" },
+  { name: "Alex Pendergast", role: "Graduate Student", bio: "Placeholder bio for Alex Pendergast.", email: "alex.pendergast@emory.edu" },
+  { name: "Anupama Priyadarshini", role: "Research Scientist", bio: "Placeholder bio for Anupama Priyadarshini.", email: "anupama.priyadarshini@emory.edu" },
+  { name: "Srija Ponna", role: "Research Specialist", bio: "Placeholder bio for Srija Ponna.", email: "srija.ponna@emory.edu" },
+  { name: "Jonathan Wade", role: "Research Specialist", bio: "Placeholder bio for Jonathan Wade.", email: "jonathan.wade@emory.edu" },
+  { name: "Zak Kostamo", role: "Research Specialist", bio: "Placeholder bio for Zak Kostamo.", email: "zak.kostamo@emory.edu" }
 ];
+
+let activeIndex = null;
+
+function toggleDropdown(index) {
+  const details = document.querySelectorAll('.member-details');
+  details.forEach((detail, i) => {
+    if (i === index) {
+      detail.classList.toggle('active');
+    } else {
+      detail.classList.remove('active');
+    }
+  });
+}
 ---
 
 <Layout title="Our Team | Sheehan Lab">
@@ -25,19 +62,14 @@ const teamMembers = [
     <section class="team-grid">
       <div class="container">
         {teamMembers.map((member, index) => (
-          <div class="team-member" style={`animation-delay: ${index * 0.1}s`}>
-            <div class="member-image">
-              <img src={member.image} alt={member.name} />
-            </div>
+          <div class="team-member" data-index={index}>
             <div class="member-info">
               <h2>{member.name}</h2>
               <h3>{member.role}</h3>
+            </div>
+            <div class="member-details">
               <p>{member.bio}</p>
-              <div class="specialties">
-                {member.specialties.map(specialty => (
-                  <span class="specialty-tag">{specialty}</span>
-                ))}
-              </div>
+              <p>Email: <a href={`mailto:${member.email}`}>{member.email}</a></p>
             </div>
           </div>
         ))}
@@ -59,46 +91,40 @@ const teamMembers = [
       color: white;
       padding: 8rem 2rem 4rem;
       margin-top: 60px;
+      text-align: center;
     }
 
     .team-grid {
       padding: 4rem 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
     }
 
     .team-member {
-      display: grid;
-      grid-template-columns: 300px 1fr;
-      gap: 2rem;
-      margin-bottom: 4rem;
       padding: 2rem;
       background: white;
       border-radius: 8px;
       box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-      animation: slideIn 0.5s ease-out forwards;
-      opacity: 0;
-    }
-
-    @keyframes slideIn {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .member-image img {
-      width: 100%;
-      height: 300px;
-      object-fit: cover;
-      border-radius: 4px;
+      text-align: center;
+      cursor: pointer;
       transition: transform 0.3s ease;
     }
 
-    .team-member:hover .member-image img {
-      transform: scale(1.02);
+    .team-member:hover {
+      transform: translateY(-5px);
+    }
+
+    .member-details {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+
+    .member-details.active {
+      max-height: 200px; /* Adjust based on content */
     }
 
     .member-info h2 {
@@ -110,21 +136,6 @@ const teamMembers = [
       color: var(--text-secondary);
       font-weight: 500;
       margin-bottom: 1rem;
-    }
-
-    .specialties {
-      display: flex;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-      margin-top: 1rem;
-    }
-
-    .specialty-tag {
-      background: var(--emory-accent);
-      color: white;
-      padding: 0.5rem 1rem;
-      border-radius: 20px;
-      font-size: 0.9rem;
     }
 
     .join-team {
@@ -148,15 +159,17 @@ const teamMembers = [
       background: var(--emory-accent);
       transform: translateY(-2px);
     }
-
-    @media (max-width: 768px) {
-      .team-member {
-        grid-template-columns: 1fr;
-      }
-
-      .member-image img {
-        height: 250px;
-      }
-    }
   </style>
-</Layout> 
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const members = document.querySelectorAll('.team-member');
+      members.forEach((member, index) => {
+        member.addEventListener('click', () => {
+          const details = member.querySelector('.member-details');
+          details.classList.toggle('active');
+        });
+      });
+    });
+  </script>
+</Layout>

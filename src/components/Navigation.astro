@@ -80,7 +80,7 @@ const currentPath = Astro.url.pathname;
   }
 
   .nav-link {
-    color: #333;
+    color: var(--text-primary);
     text-decoration: none;
     font-weight: 500;
     font-size: 1.1rem;
@@ -108,7 +108,7 @@ const currentPath = Astro.url.pathname;
   }
 
   .nav-link:hover {
-    color: var(--emory-primary);
+    color: var(--primary);
   }
 
   .nav-link.active::before {

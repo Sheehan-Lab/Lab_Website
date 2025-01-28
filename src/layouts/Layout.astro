@@ -42,9 +42,9 @@ const { title } = Astro.props;
 
 <style is:global>
 	/* Modern Medical/Tech Color Palette */
-	--primary: #2C5282;    /* Deep Blue */
-	--secondary: #38B2AC;  /* Teal */
-	--accent: #805AD5;     /* Purple */
+	--primary: #1A202C;
+	--secondary: #2D3748;
+	--accent: #E53E3E;
 	--neutral: #4A5568;    /* Cool Gray */
 	--background: #F7FAFC;
 	--surface: #FFFFFF;
@@ -52,8 +52,8 @@ const { title } = Astro.props;
 	--success: #38A169;
 	
 	/* Text Colors */
-	--text-primary: #2D3748;
-	--text-secondary: #4A5568;
+	--text-primary: #1A202C;
+	--text-secondary: #2D3748;
 	--text-light: #A0AEC0;
 	
 	/* Gradients */
@@ -155,5 +155,16 @@ const { title } = Astro.props;
 		.footer-links {
 			align-items: center;
 		}
+	}
+
+	:root {
+		--primary: #1A202C;
+		--secondary: #2D3748;
+		--accent: #E53E3E;
+		--background: #F7FAFC;
+		--surface: #FFFFFF;
+		--text-primary: #1A202C;
+		--text-secondary: #2D3748;
+		--text-light: #A0AEC0;
 	}
 </style>
