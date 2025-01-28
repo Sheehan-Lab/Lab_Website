@@ -1,11 +1,315 @@
 ---
-import Welcome from '../components/Welcome.astro';
 import Layout from '../layouts/Layout.astro';
 
 // Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
 // Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
 ---
 
-<Layout>
-	<Welcome />
+<Layout title="Sheehan Lab | Sickle Cell Disease Research at Emory University">
+	<main>
+		<section class="hero">
+			<div class="hero-content">
+				<h1>Sheehan Lab</h1>
+				<p class="subtitle">Advancing Sickle Cell Disease Research and Treatment</p>
+				<div class="hero-buttons">
+					<a href="/research" class="button primary">Our Research</a>
+					<a href="/publications" class="button secondary">Latest Publications</a>
+				</div>
+			</div>
+		</section>
+
+		<section class="mission">
+			<div class="container">
+				<h2>Our Mission</h2>
+				<p>The Sheehan Lab is dedicated to developing and improving therapies for individuals living with sickle cell disease. Our multifaceted approach combines genomics, clinical research, and innovative biomarker development to better understand and treat this complex disease.</p>
+			</div>
+		</section>
+
+		<section class="research-highlights">
+			<div class="container">
+				<h2>Research Focus</h2>
+				<div class="highlight-grid">
+					<div class="highlight-card">
+						<div class="card-icon">🧬</div>
+						<h3>Genomics & Therapy</h3>
+						<p>Identifying genetic factors and new drug targets to increase fetal hemoglobin levels.</p>
+					</div>
+					<div class="highlight-card">
+						<div class="card-icon">🔬</div>
+						<h3>Pain Management</h3>
+						<p>Investigating genetic factors in chronic pain development and biomarker research.</p>
+					</div>
+					<div class="highlight-card">
+						<div class="card-icon">��</div>
+						<h3>Biomarker Development</h3>
+						<p>Creating new methods to evaluate red cell function and therapy effectiveness.</p>
+					</div>
+					<div class="highlight-card">
+						<div class="card-icon">🧪</div>
+						<h3>Gene-Based Therapies</h3>
+						<p>Evaluating and improving gene therapy approaches for better patient outcomes.</p>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<section class="latest-news">
+			<div class="container">
+				<h2>Latest Updates</h2>
+				<div class="news-grid">
+					<div class="news-card featured">
+						<div class="news-content">
+							<span class="news-tag">Featured Research</span>
+							<h3>New Findings on GBT021601 and Pain Modification</h3>
+							<p>Recent research demonstrates promising results for pain management in sickle cell disease mouse models.</p>
+							<a href="/publications" class="read-more">Read More →</a>
+						</div>
+					</div>
+					<div class="news-card">
+						<span class="news-tag">Publication</span>
+						<h3>Latest Research Paper</h3>
+						<p>Investigating the impact of chronic transfusion therapy on pain behaviors.</p>
+						<a href="/publications" class="read-more">Read More →</a>
+					</div>
+				</div>
+			</div>
+		</section>
+	</main>
+
+	<style>
+		.hero {
+			background: linear-gradient(rgba(1, 33, 105, 0.85), rgba(1, 33, 105, 0.9)),
+						url('/images/lab-background.jpg') center/cover;
+			height: 70vh;
+			margin-top: 80px;
+			position: relative;
+		}
+
+		.hero-content {
+			max-width: 800px;
+			padding: 2rem;
+			animation: fadeIn 1s ease-out;
+		}
+
+		.hero h1 {
+			font-size: 4rem;
+			margin-bottom: 1rem;
+			color: white;
+		}
+
+		.subtitle {
+			font-size: 1.5rem;
+			opacity: 0.9;
+			margin-bottom: 2rem;
+		}
+
+		.hero-buttons {
+			display: flex;
+			gap: 1rem;
+			justify-content: center;
+		}
+
+		.button {
+			display: inline-block;
+			padding: 1rem 2rem;
+			border-radius: 6px;
+			font-weight: 500;
+			text-decoration: none;
+			transition: all 0.2s;
+			position: relative;
+			overflow: hidden;
+		}
+
+		.button.primary {
+			background: white;
+			color: var(--accent);
+		}
+
+		.button.secondary {
+			background: transparent;
+			border: 2px solid white;
+			color: white;
+		}
+
+		.button::after {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: rgba(255, 255, 255, 0.1);
+			transform: translateX(-100%);
+			transition: transform 0.3s ease;
+		}
+
+		.button:hover::after {
+			transform: translateX(0);
+		}
+
+		.button:hover {
+			transform: translateY(-2px);
+		}
+
+		.mission {
+			padding: 6rem 0;
+			background: white;
+		}
+
+		.container {
+			max-width: 1200px;
+			margin: 0 auto;
+			padding: 0 2rem;
+		}
+
+		.research-highlights {
+			padding: 6rem 0;
+			background: #f8fafc;
+		}
+
+		.highlight-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+			gap: 2rem;
+			margin-top: 3rem;
+		}
+
+		.highlight-card {
+			background: white;
+			padding: 2rem;
+			border-radius: 8px;
+			box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+			transition: transform 0.3s ease, box-shadow 0.3s ease;
+			animation: fadeIn 0.5s ease-out;
+			animation-fill-mode: both;
+		}
+
+		.highlight-card:nth-child(1) { animation-delay: 0.1s; }
+		.highlight-card:nth-child(2) { animation-delay: 0.2s; }
+		.highlight-card:nth-child(3) { animation-delay: 0.3s; }
+		.highlight-card:nth-child(4) { animation-delay: 0.4s; }
+
+		.highlight-card:hover {
+			transform: translateY(-5px);
+			box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+		}
+
+		.card-icon {
+			font-size: 2rem;
+			margin-bottom: 1rem;
+		}
+
+		.latest-news {
+			padding: 6rem 0;
+		}
+
+		.news-grid {
+			display: grid;
+			grid-template-columns: 2fr 1fr;
+			gap: 2rem;
+			margin-top: 3rem;
+		}
+
+		.news-card {
+			background: white;
+			padding: 2rem;
+			border-radius: 8px;
+			box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+			animation: slideIn 0.5s ease-out;
+			animation-fill-mode: both;
+		}
+
+		.news-card:nth-child(2) { animation-delay: 0.2s; }
+
+		.news-card.featured {
+			background: linear-gradient(135deg, var(--emory-primary), var(--emory-accent));
+			color: white;
+		}
+
+		.news-card.featured h3,
+		.news-card.featured p {
+			color: white;
+		}
+
+		.news-tag {
+			display: inline-block;
+			padding: 0.5rem 1rem;
+			background: rgba(255, 255, 255, 0.1);
+			border-radius: 20px;
+			font-size: 0.9rem;
+			margin-bottom: 1rem;
+		}
+
+		.read-more {
+			display: inline-block;
+			margin-top: 1rem;
+			color: inherit;
+			text-decoration: none;
+			font-weight: 500;
+		}
+
+		@media (max-width: 768px) {
+			.hero h1 {
+				font-size: 2.5rem;
+			}
+
+			.subtitle {
+				font-size: 1.2rem;
+			}
+
+			.news-grid {
+				grid-template-columns: 1fr;
+			}
+
+			.hero-buttons {
+				flex-direction: column;
+			}
+
+			.button {
+				width: 100%;
+			}
+		}
+
+		/* Add a subtle parallax effect to the hero */
+		.hero {
+			background-attachment: fixed;
+		}
+
+		/* Enhance button hover effects */
+		.button {
+			position: relative;
+			overflow: hidden;
+		}
+
+		.button::after {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: rgba(255, 255, 255, 0.1);
+			transform: translateX(-100%);
+			transition: transform 0.3s ease;
+		}
+
+		.button:hover::after {
+			transform: translateX(0);
+		}
+
+		/* Add hover effect to cards */
+		.highlight-card {
+			transition: transform 0.3s ease, box-shadow 0.3s ease;
+		}
+
+		.highlight-card:hover {
+			transform: translateY(-5px);
+			box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+		}
+
+		/* Add a subtle gradient to the news cards */
+		.news-card.featured {
+			background: linear-gradient(135deg, var(--emory-primary), var(--emory-accent));
+		}
+	</style>
 </Layout>

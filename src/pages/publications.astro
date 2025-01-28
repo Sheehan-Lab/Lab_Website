@@ -1,0 +1,150 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Publications | Sheehan Lab">
+  <main>
+    <section class="page-header">
+      <div class="container">
+        <h1>Publications</h1>
+        <p>Our contributions to sickle cell disease research and treatment</p>
+      </div>
+    </section>
+
+    <section class="featured-publication">
+      <div class="container">
+        <h2>Featured Research</h2>
+        <div class="publication-card featured">
+          <div class="pub-content">
+            <h3>Impact of GBT021601 on Pain Modification in Sickle Cell Disease</h3>
+            <p class="authors">Sheehan VA, et al.</p>
+            <p class="abstract">Recent findings demonstrate the impact of chronic transfusion therapy and GBT021601 on pain behaviors in sickle cell disease mouse models, showing promising results for pain management...</p>
+            <div class="pub-links">
+              <a href="#" class="button">Read Paper</a>
+              <a href="#" class="button secondary">Download PDF</a>
+            </div>
+          </div>
+          <div class="pub-image">
+            <!-- Add your image here -->
+            <img src="/images/featured-research.jpg" alt="Research Visualization" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="publication-list">
+      <div class="container">
+        <h2>Recent Publications</h2>
+        <div class="year-section">
+          <h3>2024</h3>
+          <div class="publication-grid">
+            {/* Add actual publications here */}
+            <div class="publication-card">
+              <h4>Title of Publication</h4>
+              <p class="authors">Authors list</p>
+              <p class="journal">Journal Name (2024)</p>
+              <a href="#" class="link">Read More →</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <style>
+    .page-header {
+      background: var(--accent);
+      color: white;
+      padding: 6rem 2rem 4rem;
+      margin-top: 60px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    .featured-publication {
+      padding: 4rem 0;
+      background: #f5f5f7;
+    }
+
+    .publication-card.featured {
+      display: grid;
+      grid-template-columns: 3fr 2fr;
+      gap: 2rem;
+      background: white;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .pub-image img {
+      width: 100%;
+      height: auto;
+      border-radius: 4px;
+    }
+
+    .publication-list {
+      padding: 4rem 0;
+    }
+
+    .year-section {
+      margin: 2rem 0;
+    }
+
+    .publication-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-top: 1rem;
+    }
+
+    .publication-card {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .authors {
+      color: #666;
+      margin: 0.5rem 0;
+    }
+
+    .journal {
+      color: #888;
+      font-style: italic;
+    }
+
+    .button {
+      display: inline-block;
+      padding: 0.8rem 1.5rem;
+      background: var(--accent);
+      color: white;
+      text-decoration: none;
+      border-radius: 4px;
+      margin-right: 1rem;
+      transition: background 0.2s;
+    }
+
+    .button.secondary {
+      background: transparent;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+    }
+
+    .link {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    @media (max-width: 768px) {
+      .publication-card.featured {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</Layout> 

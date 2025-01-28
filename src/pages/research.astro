@@ -1,0 +1,167 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Research | Sheehan Lab">
+  <main>
+    <section class="page-header">
+      <div class="container">
+        <h1>Our Research</h1>
+        <p>Advancing understanding and treatment of sickle cell disease through multiple research approaches</p>
+      </div>
+    </section>
+
+    <section class="research-area">
+      <div class="container">
+        <div class="research-content">
+          <div class="text-content">
+            <h2>Genomics & Fetal Hemoglobin</h2>
+            <p>Our genomics research focuses on identifying and utilizing genetic differences between patients to discover new drug targets that can increase fetal hemoglobin levels. This work has progressed from initial genetic associations to successful clinical trials, including the development of a treatment that's safe during pregnancy.</p>
+            <ul class="research-highlights">
+              <li>Genetic variant identification</li>
+              <li>Drug target discovery</li>
+              <li>Clinical trial implementation</li>
+              <li>Collaborative genomics studies</li>
+            </ul>
+          </div>
+          <div class="image-container">
+            <!-- Add your image here -->
+            <img src="/images/genomics-research.jpg" alt="Genomics Research Visualization" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="research-area alternate">
+      <div class="container">
+        <div class="research-content">
+          <div class="image-container">
+            <!-- Add your image here -->
+            <img src="/images/pain-research.jpg" alt="Pain Management Research" />
+          </div>
+          <div class="text-content">
+            <h2>Pain Management Research</h2>
+            <p>We investigate the complex mechanisms behind chronic pain development in sickle cell disease. Our research examines how years of episodic pain crises can lead to permanent changes in pain signaling, particularly focusing on the role of microglial cells.</p>
+            <ul class="research-highlights">
+              <li>Chronic vs. acute pain mechanisms</li>
+              <li>Biomarker development</li>
+              <li>Drug compound screening</li>
+              <li>Transcriptome analysis</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="research-area">
+      <div class="container">
+        <div class="research-content">
+          <div class="text-content">
+            <h2>Biomarker Development</h2>
+            <p>Our lab develops innovative biomarkers to evaluate red cell function and therapy effectiveness. Using advanced technologies like oxygen gradient ektacytometry, we measure red cell flexibility and oxygen tolerance to assess treatment outcomes.</p>
+            <ul class="research-highlights">
+              <li>Red cell flexibility assessment</li>
+              <li>Oxygen tolerance measurement</li>
+              <li>Dense cell analysis</li>
+              <li>Adhesion index development</li>
+            </ul>
+          </div>
+          <div class="image-container">
+            <!-- Add your image here -->
+            <img src="/images/biomarker-research.jpg" alt="Biomarker Development" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="research-area alternate">
+      <div class="container">
+        <div class="research-content">
+          <div class="image-container">
+            <!-- Add your image here -->
+            <img src="/images/gene-therapy.jpg" alt="Gene Therapy Research" />
+          </div>
+          <div class="text-content">
+            <h2>Gene-Based Therapies</h2>
+            <p>We're at the forefront of evaluating and improving gene therapy approaches for sickle cell disease. Our work includes investigating safety concerns, developing optimization strategies, and establishing new standards for cure definition.</p>
+            <ul class="research-highlights">
+              <li>Safety evaluation</li>
+              <li>Optimization strategies</li>
+              <li>Cure criteria development</li>
+              <li>Multi-site trial coordination</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <style>
+    .page-header {
+      background: var(--accent);
+      color: white;
+      padding: 6rem 2rem 4rem;
+      margin-top: 60px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    .research-area {
+      padding: 4rem 0;
+    }
+
+    .research-area.alternate {
+      background: #f5f5f7;
+    }
+
+    .research-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+    }
+
+    .image-container img {
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .research-highlights {
+      list-style: none;
+      padding: 0;
+      margin-top: 1.5rem;
+    }
+
+    .research-highlights li {
+      margin: 0.5rem 0;
+      padding-left: 1.5rem;
+      position: relative;
+    }
+
+    .research-highlights li::before {
+      content: "•";
+      color: var(--accent);
+      font-weight: bold;
+      position: absolute;
+      left: 0;
+    }
+
+    @media (max-width: 768px) {
+      .research-content {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+
+      .alternate .research-content {
+        display: flex;
+        flex-direction: column-reverse;
+      }
+    }
+  </style>
+</Layout> 

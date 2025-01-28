@@ -1,0 +1,49 @@
+<button id="scroll-top" aria-label="Scroll to top">
+  ↑
+</button>
+
+<script>
+  const scrollBtn = document.getElementById('scroll-top');
+  
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 300) {
+      scrollBtn?.classList.add('visible');
+    } else {
+      scrollBtn?.classList.remove('visible');
+    }
+  });
+
+  scrollBtn?.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+</script>
+
+<style>
+  #scroll-top {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background: var(--emory-primary);
+    color: white;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    opacity: 0;
+    transform: translateY(100px);
+    transition: all 0.3s ease;
+    font-size: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  }
+
+  #scroll-top.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  #scroll-top:hover {
+    background: var(--emory-accent);
+    transform: translateY(-3px);
+  }
+</style> 

@@ -1,0 +1,254 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Contact Us | Sheehan Lab">
+  <main>
+    <section class="page-header">
+      <div class="container">
+        <h1>Contact Us</h1>
+        <p>Get in touch with the Sheehan Lab team</p>
+      </div>
+    </section>
+
+    <section class="contact-content">
+      <div class="container">
+        <div class="contact-grid">
+          <div class="contact-info">
+            <div class="info-card">
+              <h2>Location</h2>
+              <p>Emory University School of Medicine</p>
+              <p>Department of Pediatrics</p>
+              <p>Atlanta, GA</p>
+            </div>
+
+            <div class="info-card">
+              <h2>Email</h2>
+              <a href="mailto:contact@sheehanlab.emory.edu">contact@sheehanlab.emory.edu</a>
+            </div>
+
+            <div class="info-card">
+              <h2>For Prospective Students</h2>
+              <p>We're always looking for passionate researchers to join our team. Please send your CV and research interests.</p>
+            </div>
+          </div>
+
+          <form 
+            name="contact" 
+            method="POST" 
+            data-netlify="true" 
+            class="contact-form" 
+            netlify-honeypot="bot-field"
+          >
+            <p class="hidden">
+              <label>
+                Don't fill this out if you're human: <input name="bot-field" />
+              </label>
+            </p>
+            <input type="hidden" name="form-name" value="contact" />
+            
+            <div class="form-group">
+              <label for="name">Name</label>
+              <input type="text" id="name" name="name" required />
+            </div>
+
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input type="email" id="email" name="email" required />
+            </div>
+
+            <div class="form-group">
+              <label for="subject">Subject</label>
+              <select id="subject" name="subject">
+                <option value="general">General Inquiry</option>
+                <option value="collaboration">Research Collaboration</option>
+                <option value="student">Student Application</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="message">Message</label>
+              <textarea id="message" name="message" rows="5" required></textarea>
+            </div>
+
+            <button type="submit" class="submit-button">
+              <span class="button-text">Send Message</span>
+              <span class="button-loader hidden"></span>
+            </button>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <style>
+    .page-header {
+      background: var(--emory-primary);
+      color: white;
+      padding: 8rem 2rem 4rem;
+      margin-top: 60px;
+    }
+
+    .contact-content {
+      padding: 4rem 0;
+    }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      margin-top: 2rem;
+    }
+
+    .info-card {
+      background: white;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      margin-bottom: 2rem;
+      animation: fadeIn 0.5s ease-out forwards;
+    }
+
+    .info-card h2 {
+      color: var(--emory-primary);
+      margin-bottom: 1rem;
+    }
+
+    .info-card a {
+      color: var(--emory-accent);
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .info-card a:hover {
+      color: var(--emory-primary);
+    }
+
+    .contact-form {
+      background: white;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      animation: slideIn 0.5s ease-out forwards;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: var(--text-primary);
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border: 2px solid #e2e8f0;
+      border-radius: 4px;
+      transition: border-color 0.3s ease;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      outline: none;
+      border-color: var(--emory-primary);
+    }
+
+    .submit-button {
+      background: var(--emory-primary);
+      color: white;
+      padding: 1rem 2rem;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      width: 100%;
+    }
+
+    .submit-button:hover {
+      background: var(--emory-accent);
+      transform: translateY(-2px);
+    }
+
+    @media (max-width: 768px) {
+      .contact-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateX(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .button-loader {
+      width: 20px;
+      height: 20px;
+      border: 2px solid #ffffff;
+      border-radius: 50%;
+      border-top-color: transparent;
+      animation: spin 1s linear infinite;
+      margin-left: 8px;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .submit-button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .submit-button:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+  </style>
+
+  <script>
+    const form = document.querySelector('form');
+    const button = form?.querySelector('button');
+    const buttonText = button?.querySelector('.button-text');
+    const buttonLoader = button?.querySelector('.button-loader');
+
+    form?.addEventListener('submit', (e) => {
+      if (button && buttonText && buttonLoader) {
+        button.disabled = true;
+        buttonText.textContent = 'Sending...';
+        buttonLoader.classList.remove('hidden');
+      }
+    });
+  </script>
+</Layout> 

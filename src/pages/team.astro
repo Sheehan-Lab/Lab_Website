@@ -1,0 +1,162 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const teamMembers = [
+  {
+    name: "Dr. Vivien Sheehan",
+    role: "Principal Investigator",
+    image: "/images/team/leader.jpg",
+    bio: "Dr. Sheehan's research focuses on developing new therapies for individuals living with sickle cell disease, combining genomics, clinical research, and innovative biomarker development.",
+    specialties: ["Sickle Cell Disease", "Genomics", "Clinical Research"]
+  },
+  // Add more team members here
+];
+---
+
+<Layout title="Our Team | Sheehan Lab">
+  <main>
+    <section class="page-header">
+      <div class="container">
+        <h1>Our Team</h1>
+        <p>Meet the researchers advancing sickle cell disease treatment at Emory University</p>
+      </div>
+    </section>
+
+    <section class="team-grid">
+      <div class="container">
+        {teamMembers.map((member, index) => (
+          <div class="team-member" style={`animation-delay: ${index * 0.1}s`}>
+            <div class="member-image">
+              <img src={member.image} alt={member.name} />
+            </div>
+            <div class="member-info">
+              <h2>{member.name}</h2>
+              <h3>{member.role}</h3>
+              <p>{member.bio}</p>
+              <div class="specialties">
+                {member.specialties.map(specialty => (
+                  <span class="specialty-tag">{specialty}</span>
+                ))}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <section class="join-team">
+      <div class="container">
+        <h2>Join Our Team</h2>
+        <p>We're always looking for passionate researchers to join our mission in advancing sickle cell disease treatment.</p>
+        <a href="/contact" class="button primary">Contact Us</a>
+      </div>
+    </section>
+  </main>
+
+  <style>
+    .page-header {
+      background: var(--emory-primary);
+      color: white;
+      padding: 8rem 2rem 4rem;
+      margin-top: 60px;
+    }
+
+    .team-grid {
+      padding: 4rem 0;
+    }
+
+    .team-member {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 2rem;
+      margin-bottom: 4rem;
+      padding: 2rem;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      animation: slideIn 0.5s ease-out forwards;
+      opacity: 0;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .member-image img {
+      width: 100%;
+      height: 300px;
+      object-fit: cover;
+      border-radius: 4px;
+      transition: transform 0.3s ease;
+    }
+
+    .team-member:hover .member-image img {
+      transform: scale(1.02);
+    }
+
+    .member-info h2 {
+      color: var(--emory-primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .member-info h3 {
+      color: var(--text-secondary);
+      font-weight: 500;
+      margin-bottom: 1rem;
+    }
+
+    .specialties {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+
+    .specialty-tag {
+      background: var(--emory-accent);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.9rem;
+    }
+
+    .join-team {
+      background: #f8fafc;
+      padding: 4rem 0;
+      text-align: center;
+    }
+
+    .button.primary {
+      display: inline-block;
+      padding: 1rem 2rem;
+      background: var(--emory-primary);
+      color: white;
+      text-decoration: none;
+      border-radius: 4px;
+      margin-top: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .button.primary:hover {
+      background: var(--emory-accent);
+      transform: translateY(-2px);
+    }
+
+    @media (max-width: 768px) {
+      .team-member {
+        grid-template-columns: 1fr;
+      }
+
+      .member-image img {
+        height: 250px;
+      }
+    }
+  </style>
+</Layout> 
