@@ -140,13 +140,14 @@ const latestResearchPaper = await fetchLatestResearchPaper();
 		}
 
 		.button.primary {
-			background-color: var(--emory-accent);
-			color: white;
+			background-color: white;
+			color: var(--emory-accent);
+			border: 2px solid white;
 		}
 
 		.button.secondary {
 			background-color: transparent;
-			border: 2px solid white;
+			border: 1px solid white;
 			color: white;
 		}
 
@@ -155,8 +156,7 @@ const latestResearchPaper = await fetchLatestResearchPaper();
 		}
 
 		.button.primary:hover {
-			background-color: var(--emory-accent);
-			color: white;
+			background-color: rgba(255, 255, 255, 0.9);
 		}
 
 		.button.secondary:hover {
