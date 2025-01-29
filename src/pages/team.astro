@@ -18,7 +18,7 @@ const teamMembers = [
   { name: "Dr. Kennedy Goldsborough PhD", role: "Postdoctoral Researcher", bio: "Placeholder bio for Dr. Kennedy Goldsborough.", email: "kennedy.goldsborough@emory.edu" },
   { name: "Dr. Ashwin Patel MBBS, PhD", role: "Associate Professor", bio: "Placeholder bio for Dr. Ashwin Patel.", email: "ashwin.patel@emory.edu" },
   { 
-    name: "Ugochukwu Agbakwuru", 
+    name: "Dr. Ugochukwu Agbakwuru MD", 
     role: "Pediatric Hematology/Oncology Fellow", 
     bio: "Placeholder bio for Ugochukwu Agbakwuru.",
     email: "ugo.agbakwuru@emory.edu"
@@ -55,7 +55,7 @@ function toggleDropdown(index) {
     <section class="page-header">
       <div class="container">
         <h1>Our Team</h1>
-        <p>Meet the researchers advancing sickle cell disease treatment at Emory University</p>
+        <p>Meet our passionate team of researchers</p>
       </div>
     </section>
 
@@ -87,11 +87,40 @@ function toggleDropdown(index) {
 
   <style>
     .page-header {
-      background: var(--emory-primary);
+      background: linear-gradient(135deg, var(--emory-primary) 0%, #1a365d 100%);
       color: white;
       padding: 8rem 2rem 4rem;
       margin-top: 60px;
       text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .page-header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('/images/pattern.svg') repeat;
+      opacity: 0.1;
+      pointer-events: none;
+    }
+
+    .page-header h1 {
+      color: white;
+      font-size: 2.8rem;
+      margin-bottom: 1rem;
+      position: relative;
+    }
+
+    .page-header p {
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 1.2rem;
+      max-width: 600px;
+      margin: 0 auto;
+      position: relative;
     }
 
     .team-grid {
