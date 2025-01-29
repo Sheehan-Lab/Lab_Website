@@ -122,28 +122,47 @@ import Layout from '../layouts/Layout.astro';
     }
 
     .submit-button {
-      background: var(--emory-primary);
-      color: white;
-      padding: 1rem 2rem;
-      border: none;
+      background: transparent;
+      color: var(--emory-primary);
+      padding: 0.8rem 1.5rem;
+      border: 1px solid var(--emory-primary);
       border-radius: 4px;
       cursor: pointer;
       transition: all 0.3s ease;
       font-size: 1rem;
-      font-weight: 600;
+      font-weight: 500;
       width: fit-content;
       align-self: flex-end;
     }
 
     .submit-button:hover {
-      background: var(--emory-accent);
+      background: var(--emory-primary);
+      color: white;
       transform: translateY(-2px);
     }
 
     @media (max-width: 768px) {
+      .page-header {
+        padding: 4rem 1rem 2rem;
+      }
+
       .contact-grid {
         grid-template-columns: 1fr;
         gap: 2rem;
+        padding: 0 1rem;
+      }
+
+      .contact-form {
+        padding: 1.5rem;
+      }
+
+      .submit-button {
+        width: 100%;
+        text-align: center;
+      }
+
+      .container {
+        padding: 0 1rem;
       }
     }
   </style>
