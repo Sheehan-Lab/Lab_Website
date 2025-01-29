@@ -230,6 +230,18 @@ const latestResearchPaper = await fetchLatestResearchPaper();
 			text-align: center;
 		}
 
+		/* Add specific styling for buttons in update cards */
+		.update-card .button.primary {
+			background-color: black;
+			border: 2px solid black;
+			color: white;
+		}
+
+		.update-card .button.primary:hover {
+			background-color: white;
+			color: black;
+		}
+
 		@media (max-width: 768px) {
 			.hero h1 {
 				font-size: 2.5rem;
