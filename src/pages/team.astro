@@ -87,25 +87,14 @@ function toggleDropdown(index) {
 
   <style>
     .page-header {
-      background: linear-gradient(135deg, var(--emory-primary) 0%, #1a365d 100%);
+      background: url('public/images/Sheehan Team Photo 4.JPG') center/cover;
       color: white;
-      padding: 8rem 2rem 4rem;
+      padding: 12rem 2rem 8rem;  /* Increased padding top and bottom */
       margin-top: 60px;
       text-align: center;
       position: relative;
-      overflow: hidden;
-    }
-
-    .page-header::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: url('/images/pattern.svg') repeat;
-      opacity: 0.1;
-      pointer-events: none;
+      background-attachment: fixed;
+      min-height: 60vh;  /* Added minimum height */
     }
 
     .page-header h1 {
@@ -113,14 +102,24 @@ function toggleDropdown(index) {
       font-size: 2.8rem;
       margin-bottom: 1rem;
       position: relative;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
     }
 
     .page-header p {
-      color: rgba(255, 255, 255, 0.9);
+      color: white;
       font-size: 1.2rem;
       max-width: 600px;
       margin: 0 auto;
       position: relative;
+      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+    }
+
+    @media (max-width: 768px) {
+      .page-header {
+        padding: 8rem 2rem 4rem;  /* Slightly reduced padding for mobile */
+        min-height: 40vh;  /* Adjusted for mobile */
+        background-attachment: scroll;  /* Better mobile performance */
+      }
     }
 
     .team-grid {
