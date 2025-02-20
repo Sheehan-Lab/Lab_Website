@@ -1,0 +1,120 @@
+---
+import type { PubMedArticle } from '../utils/pubmed';
+
+interface Props {
+  publications: PubMedArticle[];
+}
+
+const { publications } = Astro.props;
+
+function formatAuthors(authors: string[]): string {
+  if (authors.length <= 2) return authors.join(', ');
+  return `${authors[0]} et al.`;
+}
+---
+
+<div class="publications-list">
+  {publications.map((pub) => (
+    <article class="publication-card">
+      <h3 class="title">{pub.title}</h3>
+      <p class="authors">{formatAuthors(pub.authors)}</p>
+      <p class="journal">
+        <span class="journal-name">{pub.journal}</span>
+        <span class="pub-date">{new Date(pub.pubDate).getFullYear()}</span>
+      </p>
+      <div class="links">
+        {pub.doi && (
+          <a href={`https://doi.org/${pub.doi}`} target="_blank" rel="noopener noreferrer" class="link">
+            DOI
+          </a>
+        )}
+        <a href={`https://pubmed.ncbi.nlm.nih.gov/${pub.pmid}`} target="_blank" rel="noopener noreferrer" class="link">
+          PubMed
+        </a>
+      </div>
+    </article>
+  ))}
+</div>
+
+<style>
+  .publications-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 1rem;
+  }
+
+  .publication-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 12px rgba(0, 33, 105, 0.06);
+    transition: transform 0.3s ease;
+  }
+
+  .publication-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(0, 33, 105, 0.1);
+  }
+
+  .title {
+    color: var(--emory-primary);
+    font-size: 1.2rem;
+    margin: 0 0 0.75rem;
+    line-height: 1.4;
+  }
+
+  .authors {
+    color: #4a5568;
+    font-size: 1rem;
+    margin: 0 0 0.5rem;
+  }
+
+  .journal {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #718096;
+    font-size: 0.9rem;
+    margin: 0 0 1rem;
+  }
+
+  .journal-name {
+    font-style: italic;
+  }
+
+  .links {
+    display: flex;
+    gap: 1rem;
+    margin-top: auto;
+  }
+
+  .link {
+    color: var(--emory-primary);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 0.25rem 0.75rem;
+    border-radius: 6px;
+    background: rgba(1, 33, 105, 0.1);
+    transition: background 0.3s ease;
+  }
+
+  .link:hover {
+    background: rgba(1, 33, 105, 0.2);
+  }
+
+  @media (max-width: 768px) {
+    .publications-list {
+      padding: 0.5rem;
+    }
+
+    .publication-card {
+      padding: 1.25rem;
+    }
+
+    .title {
+      font-size: 1.1rem;
+    }
+  }
+</style> 

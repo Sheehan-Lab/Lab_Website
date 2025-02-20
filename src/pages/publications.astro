@@ -1,219 +1,136 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import PublicationList from '../components/PublicationList.astro';
+import { getSheehanPublications } from '../utils/pubmed';
+import type { PubMedArticle } from '../utils/pubmed';
 
-// Vivien Sheehan's ORCID ID
-const orcidId = '0000-0003-2837-2255'; // Replace with the actual ORCID ID
+let publications: PubMedArticle[] = [];
+let error: Error | null = null;
 
-// Function to fetch publications from ORCID
-const fetchPublications = async () => {
-  try {
-    // Fetch the works data from ORCID
-    const response = await fetch(`https://pub.orcid.org/v3.0/${orcidId}/works`, {
-      headers: {
-        'Accept': 'application/json'
-      }
-    });
-    const data = await response.json();
-
-    // Extract and return the publication details
-    return data.group.map(group => {
-      const workSummary = group['work-summary'][0];
-      const doi = workSummary['external-ids']['external-id'].find(id => id['external-id-type'] === 'doi')?.['external-id-value'];
-      return {
-        title: workSummary.title.title.value,
-        journal: workSummary['journal-title']?.value || 'N/A',
-        date: workSummary['publication-date']?.year?.value || 'N/A',
-        doi: doi,
-        url: doi ? `https://doi.org/${doi}` : '#'
-      };
-    });
-  } catch (error) {
-    console.error('Error fetching publications:', error);
-    return [];
-  }
-};
-
-// Function to fetch citation counts from PubMed Central
-const fetchCitationCounts = async (doi) => {
-  try {
-    const response = await fetch(`https://eutils.ncbi.nlm.nih.gov/entrez/eutils/elink.fcgi?dbfrom=pubmed&linkname=pubmed_pubmed_citedin&id=${doi}&retmode=json`);
-    const data = await response.json();
-    return data.linksets[0]?.linksetdbs[0]?.links.length || 0;
-  } catch (error) {
-    console.error(`Error fetching citation count for DOI ${doi}:`, error);
-    return 0;
-  }
-};
-
-// Fetch publications and citation counts on the server-side
-const publications = await fetchPublications();
-for (const pub of publications) {
-  if (pub.doi) {
-    pub.citations = await fetchCitationCounts(pub.doi);
-  }
+try {
+  publications = await getSheehanPublications();
+  console.log(`Fetched ${publications.length} publications`);
+} catch (e) {
+  console.error('Error fetching publications:', e);
+  error = e instanceof Error ? e : new Error('Unknown error');
 }
-
-// Pick a random publication if no specific criteria is met
-const randomIndex = Math.floor(Math.random() * publications.length);
-const featuredPublication = publications[randomIndex] || {};
 ---
 
 <Layout title="Publications | Sheehan Lab">
   <main>
-    <section class="page-header">
-      <div class="container">
+    <section class="hero">
+      <div class="hero-content">
         <h1>Publications</h1>
-        <p>Our contributions to sickle cell disease research and treatment</p>
+        <p>Our research contributions to the scientific community</p>
       </div>
     </section>
 
-    <section class="featured-publication">
+    <section class="content-section">
       <div class="container">
-        <h2>Featured Publication</h2>
-        {featuredPublication.title ? (
-          <div class="publication-card featured">
-            <div class="pub-content">
-              <h3>{featuredPublication.title}</h3>
-              <p class="authors">Journal: {featuredPublication.journal}</p>
-              <p class="abstract">Published: {featuredPublication.date}</p>
-              <p class="stats">Citations: {featuredPublication.citations || 'N/A'}</p>
-              <div class="pub-links">
-                <a href={featuredPublication.url} class="button" target="_blank">Read Paper</a>
-              </div>
-            </div>
-            <div class="pub-image">
-              <img src="/images/featured-research.jpg" alt="Research Visualization" />
-            </div>
-          </div>
-        ) : (
-          <p>No publications available.</p>
-        )}
-      </div>
-    </section>
-
-    <section class="publication-list">
-      <div class="container">
-        <h2>Recent Publications</h2>
-        {publications.length > 0 ? (
-          publications.map((pub, index) => (
-            <div class="publication-card" key={index}>
-              <h4>{pub.title}</h4>
-              <p class="authors">Journal: {pub.journal}</p>
-              <p class="journal">Published: {pub.date}</p>
-              <p class="stats">Citations: {pub.citations || 'N/A'}</p>
-              <a href={pub.url} class="link" target="_blank">Read More →</a>
-            </div>
-          ))
-        ) : (
-          <p>No publications found.</p>
-        )}
+        {error && <p class="error">Error loading publications. Please try again later.</p>}
+        {!error && publications.length === 0 && <p class="loading">Loading publications...</p>}
+        {publications.length > 0 && <PublicationList publications={publications} />}
       </div>
     </section>
   </main>
+</Layout>
 
-  <style>
-    .page-header {
-      background: navy;
-      color: white;
-      padding: 6rem 2rem 2rem;
-      margin-top: 60px;
-      text-align: center;
+<style>
+  .hero {
+    background: linear-gradient(135deg, var(--emory-primary) 0%, #001133 100%);
+    position: relative;
+    padding: 8rem 2rem 4rem;
+    margin-top: 60px;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    opacity: 0.1;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+    animation: fadeIn 1s ease-out;
+  }
+
+  .hero h1 {
+    font-size: 3.5rem;
+    color: white;
+    margin-bottom: 1.5rem;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  }
+
+  .hero p {
+    color: rgba(255,255,255,0.9);
+    font-size: 1.25rem;
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  .content-section {
+    padding: 4rem 0;
+    background: #f8fafc;
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.25rem;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .hero {
+      padding: 6rem 1rem 3rem;
     }
 
-    .page-header h1 {
-      color: white;
+    .hero h1 {
       font-size: 2.5rem;
-      margin-bottom: 1rem;
-      font-weight: 600;
     }
 
-    .page-header p {
-      color: rgba(255, 255, 255, 0.9);
-      font-size: 1.2rem;
+    .hero p {
+      font-size: 1.1rem;
     }
 
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 2rem;
+    .content-section {
+      padding: 2rem 0;
     }
+  }
 
-    .featured-publication {
-      padding: 4rem 0;
-      background: #f5f5f7;
-    }
+  .error {
+    color: #e53e3e;
+    text-align: center;
+    padding: 2rem;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 33, 105, 0.06);
+  }
 
-    .publication-card.featured {
-      display: grid;
-      grid-template-columns: 3fr 2fr;
-      gap: 2rem;
-      background: white;
-      padding: 2rem;
-      border-radius: 8px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-
-    .pub-image img {
-      width: 100%;
-      height: auto;
-      border-radius: 4px;
-    }
-
-    .publication-list {
-      padding: 4rem 0;
-    }
-
-    .publication-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 2rem;
-      margin-top: 1rem;
-    }
-
-    .publication-card {
-      background: white;
-      padding: 1.5rem;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-    .authors {
-      color: #666;
-      margin: 0.5rem 0;
-    }
-
-    .journal {
-      color: #888;
-      font-style: italic;
-    }
-
-    .button {
-      display: inline-block;
-      padding: 0.8rem 1.5rem;
-      background: var(--accent);
-      color: white;
-      text-decoration: none;
-      border-radius: 4px;
-      margin-right: 1rem;
-      transition: background 0.2s;
-    }
-
-    .button.secondary {
-      background: transparent;
-      border: 1px solid var(--accent);
-      color: var(--accent);
-    }
-
-    .link {
-      color: var(--accent);
-      text-decoration: none;
-      font-weight: 500;
-    }
-
-    @media (max-width: 768px) {
-      .publication-card.featured {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
-</Layout> 
+  .loading {
+    text-align: center;
+    padding: 2rem;
+    color: var(--emory-primary);
+  }
+</style> 
