@@ -9,7 +9,13 @@ export const onRequest = defineMiddleware((context, next) => {
   
   // If not an allowed path, redirect to maintenance
   if (!isAllowedPath) {
-    return Response.redirect(new URL('/maintenance', context.url), 302);
+    // Use 302 temporary redirect with a relative path
+    return new Response('', {
+      status: 302,
+      headers: {
+        'Location': '/maintenance'
+      }
+    });
   }
   
   return next();
