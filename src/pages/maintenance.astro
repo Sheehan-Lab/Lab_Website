@@ -1,0 +1,110 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Under Maintenance | Sheehan Lab">
+  <main class="maintenance">
+    <div class="content">
+      <div class="logo">Sheehan Lab</div>
+      <h1>Site Under Maintenance</h1>
+      <p>We're currently updating our website to better serve you. We'll be back soon with exciting new content and features.</p>
+      <div class="details">
+        <p>Expected completion: Coming Soon</p>
+        <p>For urgent inquiries, please contact the lab directly.</p>
+      </div>
+      <div class="emory-signature">
+        <span>Emory University</span>
+        <span>Department of Pediatrics</span>
+      </div>
+    </div>
+  </main>
+</Layout>
+
+<style>
+  .maintenance {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--emory-primary) 0%, #001133 100%);
+    padding: 2rem;
+    color: white;
+    text-align: center;
+  }
+
+  .content {
+    max-width: 600px;
+    padding: 3rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    animation: fadeIn 1s ease-out;
+  }
+
+  .logo {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    color: var(--emory-accent);
+  }
+
+  h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+    color: white;
+  }
+
+  p {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .details {
+    margin: 2rem 0;
+    padding: 1.5rem;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .details p {
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+  }
+
+  .emory-signature {
+    margin-top: 3rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    color: var(--emory-accent);
+    font-size: 1rem;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .content {
+      padding: 2rem;
+    }
+
+    h1 {
+      font-size: 2rem;
+    }
+
+    p {
+      font-size: 1.1rem;
+    }
+  }
+</style> 

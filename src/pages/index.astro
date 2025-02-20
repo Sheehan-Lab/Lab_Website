@@ -1,28 +1,43 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import LatestPublication from '../components/LatestPublication.astro';
+import PhotoGallery from '../components/PhotoGallery.astro';
+import { getSheehanPublications } from '../utils/pubmed';
+import type { PubMedArticle } from '../utils/pubmed';
 
-// Function to fetch the latest research paper from ORCID
-const fetchLatestResearchPaper = async () => {
-  try {
-    const response = await fetch(`https://pub.orcid.org/v3.0/0000-0003-2837-2255/works`, {
-      headers: {
-        'Accept': 'application/json'
-      }
-    });
-    const data = await response.json();
-    const latestWork = data.group[0]['work-summary'][0];
-    return {
-      title: latestWork.title.title.value,
-      summary: latestWork['journal-title']?.value || 'No summary available',
-      url: latestWork['external-ids']['external-id'].find(id => id['external-id-type'] === 'doi')?.['external-id-url']?.value || '#'
-    };
-  } catch (error) {
-    console.error('Error fetching latest research paper:', error);
-    return null;
+let latestPublication: PubMedArticle | null = null;
+let error: Error | null = null;
+
+try {
+  const publications = await getSheehanPublications();
+  latestPublication = publications[0];
+} catch (e) {
+  console.error('Error fetching latest publication:', e);
+  error = e instanceof Error ? e : new Error('Unknown error');
+}
+
+const labPhotos = [
+  {
+    src: '/images/team_photo.jpg',
+    alt: 'Sheehan Lab Team Photo',
+    caption: 'The Sheehan Lab Team'
+  },
+  {
+    src: '/images/genomics-research.jpg',
+    alt: 'Genomics Research',
+    caption: 'Advanced genomics research in progress'
+  },
+  {
+    src: '/images/biomarker-research.jpg',
+    alt: 'Biomarker Research',
+    caption: 'Developing new biomarker analysis methods'
+  },
+  {
+    src: '/images/pain-research.jpg',
+    alt: 'Pain Research',
+    caption: 'Investigating genetic factors in pain management'
   }
-};
-
-const latestResearchPaper = await fetchLatestResearchPaper();
+];
 ---
 
 <Layout title="Sheehan Lab | Sickle Cell Disease Research at Emory University">
@@ -75,20 +90,20 @@ const latestResearchPaper = await fetchLatestResearchPaper();
 
 		<section class="latest-updates">
 			<div class="container">
-				<h2>Latest Updates</h2>
-				<div class="updates-grid">
-					{latestResearchPaper ? (
-						<div class="update-card">
-							<h3>{latestResearchPaper.title}</h3>
-							<p>{latestResearchPaper.summary}</p>
-							<a href={latestResearchPaper.url} class="button latest-paper-btn">Read More</a>
-						</div>
-					) : (
-						<p>No recent research papers available.</p>
-					)}
+				<h2>Latest Publication</h2>
+				<div class="updates-content">
+					{error && <p class="error">Error loading latest publication. Please try again later.</p>}
+					{!error && !latestPublication && <p class="loading">Loading latest publication...</p>}
+					{latestPublication && <LatestPublication publication={latestPublication} />}
 				</div>
 			</div>
 		</section>
+
+		<PhotoGallery 
+			photos={labPhotos}
+			title="Lab Life"
+			description="Our team working together to advance sickle cell disease research"
+		/>
 	</main>
 
 	<style>
