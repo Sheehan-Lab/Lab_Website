@@ -1,0 +1,110 @@
+---
+import type { PubMedArticle } from '../utils/pubmed';
+
+interface Props {
+  publication: PubMedArticle;
+}
+
+const { publication } = Astro.props;
+
+function formatAuthors(authors: string[]): string {
+  if (authors.length <= 2) return authors.join(', ');
+  return `${authors[0]} et al.`;
+}
+---
+
+<article class="latest-publication">
+  <h3 class="title">{publication.title}</h3>
+  <p class="authors">{formatAuthors(publication.authors)}</p>
+  <p class="journal">
+    <span class="journal-name">{publication.journal}</span>
+    <span class="pub-date">{new Date(publication.pubDate).getFullYear()}</span>
+  </p>
+  <div class="links">
+    {publication.doi && (
+      <a href={`https://doi.org/${publication.doi}`} target="_blank" rel="noopener noreferrer" class="link">
+        DOI
+      </a>
+    )}
+    <a href={`https://pubmed.ncbi.nlm.nih.gov/${publication.pmid}`} target="_blank" rel="noopener noreferrer" class="link">
+      PubMed
+    </a>
+  </div>
+</article>
+
+<style>
+  .latest-publication {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 2px 12px rgba(0, 33, 105, 0.06);
+    transition: transform 0.3s ease;
+  }
+
+  .latest-publication:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(0, 33, 105, 0.1);
+  }
+
+  .title {
+    color: var(--emory-primary);
+    font-size: 1.3rem;
+    margin: 0 0 1rem;
+    line-height: 1.4;
+  }
+
+  .authors {
+    color: #4a5568;
+    font-size: 1.1rem;
+    margin: 0 0 0.75rem;
+  }
+
+  .journal {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #718096;
+    font-size: 1rem;
+    margin: 0 0 1.5rem;
+  }
+
+  .journal-name {
+    font-style: italic;
+  }
+
+  .links {
+    display: flex;
+    gap: 1rem;
+    margin-top: auto;
+  }
+
+  .link {
+    color: var(--emory-primary);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    background: rgba(1, 33, 105, 0.1);
+    transition: all 0.3s ease;
+  }
+
+  .link:hover {
+    background: rgba(1, 33, 105, 0.2);
+    transform: translateY(-1px);
+  }
+
+  @media (max-width: 768px) {
+    .latest-publication {
+      padding: 1.5rem;
+    }
+
+    .title {
+      font-size: 1.2rem;
+    }
+
+    .authors {
+      font-size: 1rem;
+    }
+  }
+</style> 
