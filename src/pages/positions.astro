@@ -1,0 +1,289 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+interface JobPosting {
+  title: string;
+  location: string;
+  type: string;
+  description: string;
+  requirements: string;
+  link: string;
+}
+
+const openPositions: JobPosting[] = [
+  {
+    title: "Post-Doctoral Fellow – Sickle Cell Research",
+    location: "Emory University – Sheehan Lab",
+    type: "Full-Time | Training Position",
+    description: "Join our lab as a postdoctoral fellow focused on sickle cell disease research. This training position is designed to enhance your research independence and professional skills for a future research or academic career. You will help design and conduct research, develop new ideas, prepare scientific manuscripts, and may have opportunities to supervise research staff and teach techniques to others. The initial appointment is for one year with expected renewal based on satisfactory progress and funding availability, not to exceed five years total.",
+    requirements: "Ph.D., M.D., or equivalent doctoral degree in an appropriate field. Must demonstrate excellent scientific writing ability, strong oral communication skills, and the ability to work effectively and collegially with colleagues. Additional qualifications may be specified based on research focus.",
+    link: "https://faculty-emory.icims.com/jobs/142729/post-doctoral-fellow-sickle-cell/job"
+  }
+];
+---
+
+<Layout title="Open Positions | Sheehan Lab">
+  <main>
+    <section class="hero">
+      <div class="hero-content">
+        <h1>Open Positions</h1>
+        <p>Join our team in advancing sickle cell disease research</p>
+      </div>
+    </section>
+
+    <section class="positions-section">
+      <div class="container">
+        <div class="positions-intro">
+          <p>
+            We are always looking for talented and passionate individuals to join our team. Below are our current openings. 
+            Please click through to the official Emory job posting for complete details and to submit your application.
+          </p>
+        </div>
+
+        <div class="positions-grid">
+          {openPositions.map((position) => (
+            <article class="position-card">
+              <h2>{position.title}</h2>
+              <div class="position-details">
+                <p class="location">
+                  <span class="icon">📍</span> {position.location}
+                </p>
+                <p class="type">
+                  <span class="icon">💼</span> {position.type}
+                </p>
+              </div>
+              <div class="content-section">
+                <h3>Position Overview</h3>
+                <p class="description">{position.description}</p>
+              </div>
+              <div class="content-section">
+                <h3>Requirements</h3>
+                <p class="requirements">{position.requirements}</p>
+              </div>
+              <a href={position.link} class="apply-button" target="_blank" rel="noopener noreferrer">
+                View Full Details & Apply
+                <span class="icon">→</span>
+              </a>
+            </article>
+          ))}
+        </div>
+
+        <div class="note-card">
+          <h3>Additional Information</h3>
+          <p>
+            For the most up-to-date position details and requirements, please visit the official Emory job posting through the links provided above. 
+            All applications must be submitted through Emory's official hiring portal.
+          </p>
+          <p>
+            If you don't see a position that matches your qualifications but are interested in joining our lab, 
+            we encourage you to reach out to Dr. Sheehan directly through our contact page.
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+</Layout>
+
+<style>
+  .hero {
+    background: linear-gradient(135deg, var(--emory-primary) 0%, #001133 100%);
+    position: relative;
+    padding: 8rem 2rem 4rem;
+    margin-top: 60px;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    opacity: 0.1;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+    animation: fadeIn 1s ease-out;
+  }
+
+  .hero h1 {
+    font-size: 3.5rem;
+    color: white;
+    margin-bottom: 1rem;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  }
+
+  .hero p {
+    color: rgba(255,255,255,0.9);
+    font-size: 1.5rem;
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  .positions-section {
+    padding: 4rem 0;
+    background: #f8fafc;
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+
+  .positions-intro {
+    max-width: 800px;
+    margin: 0 auto 3rem;
+    text-align: center;
+    font-size: 1.2rem;
+    color: #4a5568;
+    line-height: 1.6;
+  }
+
+  .positions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+  }
+
+  .position-card {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .position-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  }
+
+  .position-card h2 {
+    color: var(--emory-primary);
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    line-height: 1.4;
+  }
+
+  .position-details {
+    margin-bottom: 1.5rem;
+  }
+
+  .position-details p {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    color: #4a5568;
+  }
+
+  .icon {
+    display: inline-block;
+  }
+
+  .content-section {
+    margin-bottom: 1.5rem;
+  }
+
+  .content-section h3 {
+    color: var(--emory-primary);
+    font-size: 1.2rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .description {
+    color: #2d3748;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+  }
+
+  .requirements {
+    color: #2d3748;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+  }
+
+  .apply-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--emory-primary);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+  }
+
+  .apply-button:hover {
+    background: #001133;
+    transform: translateY(-2px);
+  }
+
+  .note-card {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .note-card h3 {
+    color: var(--emory-primary);
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+  }
+
+  .note-card p {
+    color: #4a5568;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+  }
+
+  .note-card p:last-child {
+    margin-bottom: 0;
+  }
+
+  @media (max-width: 768px) {
+    .hero {
+      padding: 6rem 1rem 3rem;
+    }
+
+    .hero h1 {
+      font-size: 2.5rem;
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+    }
+
+    .container {
+      padding: 0 1rem;
+    }
+
+    .positions-intro {
+      font-size: 1.1rem;
+      padding: 0 1rem;
+    }
+
+    .position-card {
+      padding: 1.5rem;
+    }
+
+    .position-card h2 {
+      font-size: 1.3rem;
+    }
+  }
+</style> 

@@ -1,15 +1,14 @@
 import { defineMiddleware } from 'astro:middleware';
 
 export const onRequest = defineMiddleware((context, next) => {
-  // List of paths that should still be accessible
-  const allowedPaths = ['/maintenance', '/images', '/_astro'];
+  // Maintenance mode is currently disabled
+  return next();
   
-  // Check if the current path is in the allowed list
+  /* Maintenance mode configuration (currently disabled)
+  const allowedPaths = ['/maintenance', '/images', '/_astro'];
   const isAllowedPath = allowedPaths.some(path => context.url.pathname.startsWith(path));
   
-  // If not an allowed path, redirect to maintenance
   if (!isAllowedPath) {
-    // Use 302 temporary redirect with a relative path
     return new Response('', {
       status: 302,
       headers: {
@@ -19,4 +18,5 @@ export const onRequest = defineMiddleware((context, next) => {
   }
   
   return next();
+  */
 }); 

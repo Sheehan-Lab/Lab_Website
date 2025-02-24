@@ -1,16 +1,16 @@
 {
-  "name": "",
+  "name": "lab_website",
   "type": "module",
   "version": "0.0.1",
   "scripts": {
     "dev": "astro dev",
+    "start": "astro dev",
     "build": "astro build",
-    "preview": "astro preview",
-    "astro": "astro"
+    "preview": "astro preview"
   },
   "dependencies": {
     "@astrojs/react": "^4.2.0",
-    "astro": "^5.1.10",
+    "astro": "^4.4.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   }
