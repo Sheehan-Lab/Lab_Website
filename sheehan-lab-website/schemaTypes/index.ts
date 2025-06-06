@@ -3,6 +3,7 @@ import { publication } from './publication'
 import { researchArea } from './researchArea'
 import { teamMember } from './teamMember'
 import gallery from './gallery'
+import position from './position'
 
 export const schemaTypes = [
   teamMember,
@@ -10,4 +11,5 @@ export const schemaTypes = [
   publication,
   pageContent,
   gallery,
+  position,
 ] 

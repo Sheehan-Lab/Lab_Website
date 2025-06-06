@@ -1,25 +1,17 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { getPositions } from '../utils/sanity';
 
-interface JobPosting {
-  title: string;
-  location: string;
-  type: string;
-  description: string;
-  requirements: string;
-  link: string;
+// Fetch positions from Sanity CMS
+let positions = [];
+let error = null;
+
+try {
+  positions = await getPositions();
+} catch (e) {
+  error = e.message;
+  console.error('Error fetching positions:', e);
 }
-
-const openPositions: JobPosting[] = [
-  {
-    title: "Post-Doctoral Fellow – Sickle Cell Research",
-    location: "Emory University – Sheehan Lab",
-    type: "Full-Time | Training Position",
-    description: "Join our lab as a postdoctoral fellow focused on sickle cell disease research. This training position is designed to enhance your research independence and professional skills for a future research or academic career. You will help design and conduct research, develop new ideas, prepare scientific manuscripts, and may have opportunities to supervise research staff and teach techniques to others. The initial appointment is for one year with expected renewal based on satisfactory progress and funding availability, not to exceed five years total.",
-    requirements: "Ph.D., M.D., or equivalent doctoral degree in an appropriate field. Must demonstrate excellent scientific writing ability, strong oral communication skills, and the ability to work effectively and collegially with colleagues. Additional qualifications may be specified based on research focus.",
-    link: "https://faculty-emory.icims.com/jobs/142729/post-doctoral-fellow-sickle-cell/job"
-  }
-];
 ---
 
 <Layout title="Open Positions | Sheehan Lab">
@@ -40,33 +32,49 @@ const openPositions: JobPosting[] = [
           </p>
         </div>
 
-        <div class="positions-grid">
-          {openPositions.map((position) => (
-            <article class="position-card">
-              <h2>{position.title}</h2>
-              <div class="position-details">
-                <p class="location">
-                  <span class="icon">📍</span> {position.location}
-                </p>
-                <p class="type">
-                  <span class="icon">💼</span> {position.type}
-                </p>
-              </div>
-              <div class="content-section">
-                <h3>Position Overview</h3>
-                <p class="description">{position.description}</p>
-              </div>
-              <div class="content-section">
-                <h3>Requirements</h3>
-                <p class="requirements">{position.requirements}</p>
-              </div>
-              <a href={position.link} class="apply-button" target="_blank" rel="noopener noreferrer">
-                View Full Details & Apply
-                <span class="icon">→</span>
-              </a>
-            </article>
-          ))}
-        </div>
+        {error ? (
+          <div class="error-message">
+            <h3>🔧 Unable to load positions</h3>
+            <p>Please ensure the Sanity CMS is properly configured.</p>
+            <details><summary>Technical details</summary><p>{error}</p></details>
+          </div>
+        ) : positions.length > 0 ? (
+          <div class="positions-grid">
+            {positions.map((position) => (
+              <article class="position-card">
+                <h2>{position.title}</h2>
+                <div class="position-details">
+                  <p class="location">
+                    <span class="icon">📍</span> {position.location}
+                  </p>
+                  <p class="type">
+                    <span class="icon">💼</span> {position.type}
+                  </p>
+                </div>
+                <div class="content-section">
+                  <h3>Position Overview</h3>
+                  <p class="description">{position.description}</p>
+                </div>
+                <div class="content-section">
+                  <h3>Requirements</h3>
+                  <p class="requirements">{position.requirements}</p>
+                </div>
+                <a href={position.applicationLink} class="apply-button" target="_blank" rel="noopener noreferrer">
+                  View Full Details & Apply
+                  <span class="icon">→</span>
+                </a>
+              </article>
+            ))}
+          </div>
+        ) : (
+          <div class="no-positions">
+            <h3>No Current Openings</h3>
+            <p>
+              We don't have any open positions at the moment, but we encourage you to check back regularly 
+              or reach out to Dr. Sheehan directly if you're interested in joining our lab.
+            </p>
+          </div>
+        )}
 
         <div class="note-card">
           <h3>Additional Information</h3>
@@ -254,6 +262,38 @@ const openPositions: JobPosting[] = [
 
   .note-card p:last-child {
     margin-bottom: 0;
+  }
+
+  .error-message {
+    background: #fff5f5;
+    color: #c53030;
+    border: 1px solid #fed7d7;
+    padding: 2rem;
+    border-radius: 8px;
+    text-align: center;
+    margin: 2rem auto;
+    max-width: 600px;
+  }
+
+  .no-positions {
+    background: white;
+    border-radius: 12px;
+    padding: 3rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    margin: 2rem auto;
+    max-width: 600px;
+  }
+
+  .no-positions h3 {
+    color: var(--emory-primary);
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .no-positions p {
+    color: #4a5568;
+    line-height: 1.6;
   }
 
   @media (max-width: 768px) {

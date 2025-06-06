@@ -1,8 +1,21 @@
 ---
 import type { PubMedArticle } from '../utils/pubmed';
 
+interface SanityPublication {
+  _id: string;
+  title: string;
+  authors: string[];
+  journal: string;
+  year: number;
+  doi?: string;
+  pmid: string;
+  type: string;
+  featured: boolean;
+  isPublished: boolean;
+}
+
 interface Props {
-  publications: PubMedArticle[];
+  publications: SanityPublication[];
 }
 
 const { publications } = Astro.props;
@@ -11,37 +24,94 @@ function formatAuthors(authors: string[]): string {
   if (authors.length <= 2) return authors.join(', ');
   return `${authors[0]} et al.`;
 }
+
+// Separate featured and regular publications
+const featuredPublications = publications.filter(pub => pub.featured);
+const regularPublications = publications.filter(pub => !pub.featured);
 ---
 
-<div class="publications-list">
-  {publications.map((pub) => (
-    <article class="publication-card">
-      <h3 class="title">{pub.title}</h3>
-      <p class="authors">{formatAuthors(pub.authors)}</p>
-      <p class="journal">
-        <span class="journal-name">{pub.journal}</span>
-        <span class="pub-date">{new Date(pub.pubDate).getFullYear()}</span>
-      </p>
-      <div class="links">
-        {pub.doi && (
-          <a href={`https://doi.org/${pub.doi}`} target="_blank" rel="noopener noreferrer" class="link">
-            DOI
-          </a>
-        )}
-        <a href={`https://pubmed.ncbi.nlm.nih.gov/${pub.pmid}`} target="_blank" rel="noopener noreferrer" class="link">
-          PubMed
-        </a>
+<div class="publications-container">
+  {featuredPublications.length > 0 && (
+    <section class="featured-section">
+      <h2 class="section-title">Featured Publications</h2>
+      <div class="publications-list featured">
+        {featuredPublications.map((pub) => (
+          <article class="publication-card featured-card">
+            <div class="featured-badge">Featured</div>
+            <h3 class="title">{pub.title}</h3>
+            <p class="authors">{formatAuthors(pub.authors)}</p>
+            <p class="journal">
+              <span class="journal-name">{pub.journal}</span>
+              <span class="pub-date">{pub.year}</span>
+            </p>
+            <div class="links">
+              {pub.doi && (
+                <a href={`https://doi.org/${pub.doi}`} target="_blank" rel="noopener noreferrer" class="link">
+                  DOI
+                </a>
+              )}
+              <a href={`https://pubmed.ncbi.nlm.nih.gov/${pub.pmid}`} target="_blank" rel="noopener noreferrer" class="link">
+                PubMed
+              </a>
+            </div>
+          </article>
+        ))}
       </div>
-    </article>
-  ))}
+    </section>
+  )}
+
+  {regularPublications.length > 0 && (
+    <section class="regular-section">
+      <h2 class="section-title">All Publications</h2>
+      <div class="publications-list">
+        {regularPublications.map((pub) => (
+          <article class="publication-card">
+            <h3 class="title">{pub.title}</h3>
+            <p class="authors">{formatAuthors(pub.authors)}</p>
+            <p class="journal">
+              <span class="journal-name">{pub.journal}</span>
+              <span class="pub-date">{pub.year}</span>
+            </p>
+            <div class="links">
+              {pub.doi && (
+                <a href={`https://doi.org/${pub.doi}`} target="_blank" rel="noopener noreferrer" class="link">
+                  DOI
+                </a>
+              )}
+              <a href={`https://pubmed.ncbi.nlm.nih.gov/${pub.pmid}`} target="_blank" rel="noopener noreferrer" class="link">
+                PubMed
+              </a>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+  )}
 </div>
 
 <style>
+  .publications-container {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+  }
+
+  .section-title {
+    color: var(--emory-primary);
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+
   .publications-list {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
     padding: 1rem;
+  }
+
+  .featured {
+    gap: 2rem;
   }
 
   .publication-card {
@@ -50,6 +120,25 @@ function formatAuthors(authors: string[]): string {
     padding: 1.5rem;
     box-shadow: 0 2px 12px rgba(0, 33, 105, 0.06);
     transition: transform 0.3s ease;
+    position: relative;
+  }
+
+  .featured-card {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    border: 2px solid var(--emory-primary);
+    box-shadow: 0 4px 20px rgba(0, 33, 105, 0.15);
+  }
+
+  .featured-badge {
+    position: absolute;
+    top: -10px;
+    right: 1rem;
+    background: var(--emory-primary);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
   }
 
   .publication-card:hover {
@@ -57,11 +146,20 @@ function formatAuthors(authors: string[]): string {
     box-shadow: 0 4px 20px rgba(0, 33, 105, 0.1);
   }
 
+  .featured-card:hover {
+    box-shadow: 0 6px 30px rgba(0, 33, 105, 0.2);
+  }
+
   .title {
     color: var(--emory-primary);
     font-size: 1.2rem;
     margin: 0 0 0.75rem;
     line-height: 1.4;
+  }
+
+  .featured-card .title {
+    font-size: 1.3rem;
+    font-weight: 600;
   }
 
   .authors {
@@ -115,6 +213,14 @@ function formatAuthors(authors: string[]): string {
 
     .title {
       font-size: 1.1rem;
+    }
+
+    .featured-card .title {
+      font-size: 1.2rem;
+    }
+
+    .section-title {
+      font-size: 1.5rem;
     }
   }
 </style> 

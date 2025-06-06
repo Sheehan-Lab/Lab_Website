@@ -1,14 +1,13 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import PublicationList from '../components/PublicationList.astro';
-import { getSheehanPublications } from '../utils/pubmed';
-import type { PubMedArticle } from '../utils/pubmed';
+import { getPublications } from '../utils/sanity';
 
-let publications: PubMedArticle[] = [];
-let error: Error | null = null;
+let publications = [];
+let error = null;
 
 try {
-  publications = await getSheehanPublications();
+  publications = await getPublications();
   console.log(`Fetched ${publications.length} publications`);
 } catch (e) {
   console.error('Error fetching publications:', e);
@@ -28,7 +27,7 @@ try {
     <section class="content-section">
       <div class="container">
         {error && <p class="error">Error loading publications. Please try again later.</p>}
-        {!error && publications.length === 0 && <p class="loading">Loading publications...</p>}
+        {!error && publications.length === 0 && <p class="loading">No publications available at the moment.</p>}
         {publications.length > 0 && <PublicationList publications={publications} />}
       </div>
     </section>

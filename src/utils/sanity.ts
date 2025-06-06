@@ -95,6 +95,21 @@ export interface PageContent {
   isPublished: boolean
 }
 
+export interface Position {
+  _id: string
+  title: string
+  slug: { current: string }
+  location: string
+  type: string
+  description: string
+  requirements: string
+  applicationLink: string
+  isActive: boolean
+  order?: number
+  postedDate?: string
+  applicationDeadline?: string
+}
+
 // Query functions
 export async function getTeamMembers(): Promise<TeamMember[]> {
   return await client.fetch(`
@@ -143,4 +158,10 @@ export async function getGallery(slug: string) {
     }));
   }
   return gallery;
+}
+
+export async function getPositions(): Promise<Position[]> {
+  return await client.fetch(`
+    *[_type == "position" && isActive == true] | order(order asc, postedDate desc)
+  `);
 } 
