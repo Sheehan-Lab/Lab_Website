@@ -12,6 +12,7 @@ export const pageContent = defineType({
       type: 'string',
       description: 'Unique identifier for the page (e.g., "home", "about", "contact")',
       validation: (Rule) => Rule.required(),
+      readOnly: true,
     }),
     defineField({
       name: 'title',
@@ -33,50 +34,34 @@ export const pageContent = defineType({
       },
     }),
     defineField({
-      name: 'content',
-      title: 'Content',
+      name: 'mission',
+      title: 'Mission Statement',
+      type: 'text',
+      rows: 5,
+    }),
+    defineField({
+      name: 'researchHighlights',
+      title: 'Research Highlights',
       type: 'array',
       of: [
-        {
-          type: 'block',
-          styles: [
-            {title: 'Normal', value: 'normal'},
-            {title: 'H1', value: 'h1'},
-            {title: 'H2', value: 'h2'},
-            {title: 'H3', value: 'h3'},
-            {title: 'Quote', value: 'blockquote'},
-          ],
-          lists: [
-            {title: 'Bullet', value: 'bullet'},
-            {title: 'Number', value: 'number'},
-          ],
-          marks: {
-            decorators: [
-              {title: 'Strong', value: 'strong'},
-              {title: 'Emphasis', value: 'em'},
-              {title: 'Code', value: 'code'},
-            ],
-            annotations: [
-              {
-                title: 'URL',
-                name: 'link',
-                type: 'object',
-                fields: [
-                  {
-                    title: 'URL',
-                    name: 'href',
-                    type: 'url',
-                  }
-                ]
-              }
-            ]
-          }
-        },
-        {
-          type: 'image',
-          options: {hotspot: true}
-        }
-      ],
+        defineField({
+          name: 'highlight',
+          type: 'object',
+          fields: [
+            { name: 'icon', title: 'Icon (emoji)', type: 'string' },
+            { name: 'title', title: 'Title', type: 'string' },
+            { name: 'text', title: 'Text', type: 'text' },
+          ]
+        })
+      ]
+    }),
+    defineField({
+      name: 'content',
+      title: 'Main Content (Old)',
+      type: 'array',
+      of: [ { type: 'block' } ],
+      description: 'This field is deprecated. Please move content to Mission and Research Highlights.',
+      readOnly: true,
     }),
     defineField({
       name: 'seo',

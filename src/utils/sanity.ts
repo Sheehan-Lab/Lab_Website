@@ -5,16 +5,25 @@ import type {SanityImageSource} from '@sanity/image-url/lib/types/types'
 // Your actual Sanity project details
 const projectId = process.env.PUBLIC_SANITY_PROJECT_ID || 'fyi47z1v'
 const dataset = process.env.PUBLIC_SANITY_DATASET || 'production'
+const apiVersion = '2024-06-13'
 
-export const sanityClient = createClient({
+// A `SANITY_AUTH_TOKEN` environment variable must be set to run this on the server.
+// You can get one from `https://www.sanity.io/manage/project/fyi47z1v/api#auth`
+const token = process.env.SANITY_AUTH_TOKEN
+
+export const client = createClient({
   projectId,
   dataset,
-  useCdn: true, // Use CDN for faster reads
-  apiVersion: '2024-01-01', // Use current date
+  apiVersion,
+  // If a token is provided, use it. This will bypass the CDN and give you fresh data.
+  // It's useful for previewing drafts and ensuring you see the latest content.
+  // Otherwise, `useCdn: true` is recommended for production performance.
+  token: token,
+  useCdn: !token,
 })
 
 // Helper for generating image URLs
-const builder = imageUrlBuilder(sanityClient)
+const builder = imageUrlBuilder(client)
 
 export function urlFor(source: SanityImageSource) {
   return builder.image(source)
@@ -70,6 +79,12 @@ export interface PageContent {
   title: string
   subtitle?: string
   heroImage?: any
+  mission?: string
+  researchHighlights?: {
+    icon?: string;
+    title?: string;
+    text?: string;
+  }[]
   content?: any[]
   seo?: {
     metaTitle?: string
@@ -82,31 +97,50 @@ export interface PageContent {
 
 // Query functions
 export async function getTeamMembers(): Promise<TeamMember[]> {
-  return await sanityClient.fetch(`
+  return await client.fetch(`
     *[_type == "teamMember" && isActive == true] | order(order asc, name asc)
   `)
 }
 
 export async function getResearchAreas(): Promise<ResearchArea[]> {
-  return await sanityClient.fetch(`
+  return await client.fetch(`
     *[_type == "researchArea" && isPublished == true] | order(order asc, title asc)
   `)
 }
 
 export async function getPublications(): Promise<Publication[]> {
-  return await sanityClient.fetch(`
+  return await client.fetch(`
     *[_type == "publication" && isPublished == true] | order(year desc, title asc)
   `)
 }
 
-export async function getFeaturedPublications(): Promise<Publication[]> {
-  return await sanityClient.fetch(`
-    *[_type == "publication" && isPublished == true && featured == true] | order(year desc, title asc)
-  `)
+export async function getFeaturedPublications(): Promise<any[]> {
+  const query = `*[_type == "publication" && isPublished == true && featured == true] | order(year desc, title asc)`
+  const publications = await client.fetch(query)
+  return publications.slice(0, 3)
 }
 
 export async function getPageContent(pageId: string): Promise<PageContent | null> {
-  return await sanityClient.fetch(`
+  return await client.fetch(`
     *[_type == "pageContent" && pageId == $pageId && isPublished == true][0]
   `, {pageId})
+}
+
+export async function getGallery(slug: string) {
+  const query = `*[_type == "gallery" && slug.current == $slug][0] {
+    title,
+    description,
+    photos[]{
+      alt,
+      asset
+    }
+  }`;
+  const gallery = await client.fetch(query, { slug });
+  if (gallery && gallery.photos) {
+    gallery.photos = gallery.photos.map((photo: { asset: SanityImageSource; alt: string }) => ({
+      alt: photo.alt,
+      src: urlFor(photo.asset).url()
+    }));
+  }
+  return gallery;
 } 

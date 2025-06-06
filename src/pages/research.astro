@@ -1,7 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { getResearchAreas, urlFor } from '../utils/sanity';
-import {PortableText} from 'astro-portabletext';
 
 // Fetch research areas from Sanity CMS
 let researchAreas = [];
@@ -9,6 +8,8 @@ let error = null;
 
 try {
   researchAreas = await getResearchAreas();
+  console.log('Research areas fetched:', researchAreas.length, 'areas');
+  console.log('First area:', researchAreas[0]);
 } catch (e) {
   error = e.message;
   console.error('Error fetching research areas:', e);
@@ -79,7 +80,7 @@ function renderPortableText(blocks) {
                   <div class="text-content">
                     <h2>{area.title}</h2>
                     {area.summary && <p class="summary">{area.summary}</p>}
-                    {area.description && <div class="description"><PortableText value={area.description} /></div>}
+                    {area.description && <div class="description" set:html={renderPortableText(area.description)} />}
                     {area.highlights && area.highlights.length > 0 && (
                         <ul class="research-highlights">
                             {area.highlights.map(highlight => <li>{highlight}</li>)}
@@ -87,12 +88,12 @@ function renderPortableText(blocks) {
                     )}
                   </div>
                   <div class="image-gallery">
-                    {area.primaryImage && (
+                    {area.primaryImage && area.primaryImage.asset && (
                         <div class="image-container primary-image">
                             <img src={urlFor(area.primaryImage).width(600).url()} alt={area.title} />
                         </div>
                     )}
-                    {area.secondaryImage && (
+                    {area.secondaryImage && area.secondaryImage.asset && (
                         <div class="image-container secondary-image">
                             <img src={urlFor(area.secondaryImage).width(400).url()} alt={`${area.title} secondary image`} />
                         </div>

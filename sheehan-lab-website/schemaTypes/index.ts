@@ -1,6 +1,13 @@
-import {teamMember} from './teamMember'
-import {researchArea} from './researchArea'
-import {publication} from './publication'
-import {pageContent} from './pageContent'
+import { pageContent } from './pageContent'
+import { publication } from './publication'
+import { researchArea } from './researchArea'
+import { teamMember } from './teamMember'
+import gallery from './gallery'
 
-export const schemaTypes = [teamMember, researchArea, publication, pageContent] 
+export const schemaTypes = [
+  teamMember,
+  researchArea,
+  publication,
+  pageContent,
+  gallery,
+] 
