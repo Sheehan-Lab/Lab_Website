@@ -1,5 +1,40 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { getResearchAreas, urlFor } from '../utils/sanity';
+
+// Fetch research areas from Sanity CMS
+let researchAreas = [];
+let error = null;
+
+try {
+  researchAreas = await getResearchAreas();
+} catch (e) {
+  error = e.message;
+  console.error('Error fetching research areas:', e);
+}
+
+// Helper function to render portable text as simple HTML
+function renderPortableText(blocks) {
+  if (!blocks) return '';
+  
+  return blocks.map(block => {
+    if (block._type === 'block') {
+      const children = block.children?.map(child => {
+        let text = child.text || '';
+        if (child.marks?.includes('strong')) text = `<strong>${text}</strong>`;
+        if (child.marks?.includes('em')) text = `<em>${text}</em>`;
+        return text;
+      }).join('') || '';
+      
+      switch (block.style) {
+        case 'h2': return `<h3>${children}</h3>`;
+        case 'h3': return `<h4>${children}</h4>`;
+        default: return `<p>${children}</p>`;
+      }
+    }
+    return '';
+  }).join('');
+}
 ---
 
 <Layout title="Research | Sheehan Lab">
@@ -11,155 +46,98 @@ import Layout from '../layouts/Layout.astro';
       </div>
     </section>
 
-    <div class="research-nav-wrapper">
-      <aside class="research-nav">
-        <nav>
-          <ul>
-            <li><a href="#igfbp3">IGFBP3 Research</a></li>
-            <li><a href="#xenograft">NBSGW Xenograft Model</a></li>
-            <li><a href="#crispr">CRISPR/Cas Gene Editing</a></li>
-            <li><a href="#alloimmunization-omics">Alloimmunization & OMICs</a></li>
-            <li><a href="#microfluidics">Microfluidics & RBC Assays</a></li>
-          </ul>
-        </nav>
-      </aside>
+    {error ? (
+      <section class="error-section">
+        <div class="container">
+          <div class="error-message">
+            <h2>🔧 Unable to load research data</h2>
+            <p>Please ensure the Sanity CMS is properly configured.</p>
+            <details>
+              <summary>Technical details</summary>
+              <p>{error}</p>
+            </details>
+          </div>
+        </div>
+      </section>
+    ) : researchAreas.length === 0 ? (
+      <section class="empty-section">
+        <div class="container">
+          <div class="empty-message">
+            <h2>📝 No research areas found</h2>
+            <p>Add research areas through the Sanity Studio to see them here.</p>
+          </div>
+        </div>
+      </section>
+    ) : (
+      <div class="research-nav-wrapper">
+        <aside class="research-nav">
+          <nav>
+            <ul>
+              {researchAreas.map((area) => (
+                <li><a href={`#${area.slug.current}`}>{area.title}</a></li>
+              ))}
+            </ul>
+          </nav>
+        </aside>
 
-      <div class="research-content-wrapper">
-        <div class="section-divider"></div>
-
-        <section id="igfbp3" class="research-area">
-          <div class="container">
-            <div class="research-content">
-              <div class="text-content">
-                <h2>IGFBP3 Research</h2>
-                <p>Our lab is investigating the crucial role of Insulin-like Growth Factor Binding Protein 3 (IGFBP3) in fetal hemoglobin (HbF) induction as a therapeutic approach for sickle cell disease. This research stems from whole genome sequencing studies that revealed individuals with higher IGFBP3 levels naturally produce more fetal hemoglobin.</p>
-                <p>Key findings from our research include:</p>
-                <ul class="research-highlights">
-                  <li>Whole genome sequencing identified IGFBP3 as a regulator of HbF production</li>
-                  <li>Plasma levels of IGFBP3 correlate with HbF production in patient samples</li>
-                  <li>Adding IGFBP3 to erythroid precursors increases HbF production, as verified in vitro</li>
-                  <li>IGFBP3 can be targeted therapeutically for SCD treatment</li>
-                  <li>Vitamin D increases IGFBP3 levels, offering a potential intervention strategy</li>
-                  <li>IGFBP3 deficiency is common in SCD patients</li>
-                  <li>IGFBP3-based therapies can be administered in combination with hydroxyurea</li>
-                </ul>
-                <p>This research provides a promising new therapeutic avenue for sickle cell disease treatment by leveraging the body's natural mechanisms for producing healthier hemoglobin.</p>
-              </div>
-              <div class="image-gallery">
-                <div class="image-container primary-image">
-                  <img src="/images/research/igfbp3.png" alt="IGFBP3 and Fetal Hemoglobin Research" />
+        <div class="research-content-wrapper">
+          {researchAreas.map((area, index) => (
+            <>
+              {index > 0 && <div class="section-divider"></div>}
+              <section id={area.slug.current} class={`research-area ${index % 2 === 1 ? 'alternate' : ''}`}>
+                <div class="container">
+                  <div class="research-content">
+                    <div class="text-content">
+                      <h2>{area.title}</h2>
+                      {area.summary && <p class="summary">{area.summary}</p>}
+                      
+                      {area.description && (
+                        <div class="description" set:html={renderPortableText(area.description)} />
+                      )}
+                      
+                      {area.highlights && area.highlights.length > 0 && (
+                        <div>
+                          <p>Key findings from our research include:</p>
+                          <ul class="research-highlights">
+                            {area.highlights.map((highlight) => (
+                              <li>{highlight}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </div>
+                    
+                    <div class="image-gallery">
+                      {area.primaryImage && (
+                        <div class="image-container primary-image">
+                          <img 
+                            src={urlFor(area.primaryImage).width(600).height(400).quality(85).url()} 
+                            alt={area.title}
+                            loading="lazy"
+                          />
+                        </div>
+                      )}
+                      {area.secondaryImage && (
+                        <div class="image-container secondary-image">
+                          <img 
+                            src={urlFor(area.secondaryImage).width(400).height(300).quality(85).url()} 
+                            alt={`${area.title} - Additional`}
+                            loading="lazy"
+                          />
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 </div>
-                <div class="image-container secondary-image">
-                  <img src="/images/research/igf2.png" alt="IGF2 and IGFBP3 Research" />
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <div class="section-divider"></div>
-        
-        <section id="xenograft" class="research-area alternate">
-          <div class="container">
-            <div class="research-content">
-              <div class="text-content">
-                <h2>NBSGW Xenograft Model</h2>
-                <p>We are studying HbF induction in vivo using the NBSGW xenograft mouse model to improve engraftment and measure HbF induction with various therapeutic compounds.</p>
-                <p>Our current focus includes:</p>
-                <ul class="research-highlights">
-                  <li>Optimizing engraftment percentages of human CD34+ cells in the NBSGW mouse model</li>
-                  <li>Determining HbF induction after administration of drugs like Metformin and Vitamin D</li>
-                  <li>Developing alternative strategies to induce HbF either in combination with hydroxyurea or as standalone treatments</li>
-                  <li>Supporting our in vitro work with Metformin through parallel in vivo studies</li>
-                  <li>Enhancing understanding of pathways involved in fetal hemoglobin induction to identify potential targets for drug development</li>
-                </ul>
-                <p>Our methodology includes engrafting human CD34+ cells from SCD patients into NBSGW mice following busulfan conditioning, with engraftment verified via flow cytometry. Mice with >50% human CD45 cells are treated with either pomalidomide (positive control), vehicle, or Metformin for 12 weeks, after which HbF levels are measured by HPLC and F-cells by flow cytometry.</p>
-              </div>
-              <div class="image-container">
-                <img src="/images/research/mobilization.png" alt="NBSGW Xenograft Model Research" />
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <div class="section-divider"></div>
-
-        <section id="crispr" class="research-area">
-          <div class="container">
-            <div class="research-content">
-              <div class="text-content">
-                <h2>CRISPR/Cas Gene Editing</h2>
-                <p>Gene therapy holds transformative potential for treating sickle cell disease (SCD) by leveraging CRISPR-based methods to induce fetal hemoglobin (HbF) or correct the HBB sickle mutation. Our project focuses on two promising approaches for treating SCD through genetic modification.</p>
-                <p>Our research investigates:</p>
-                <ul class="research-highlights">
-                  <li>An FDA-approved approach that disrupts the BCL11A gene to elevate HbF levels, a method already utilized in ex vivo gene therapy therapies</li>
-                  <li>The use of R-66S RNP with ssODN for guided HBB gene correction, for which an IND application has been submitted for clinical trial</li>
-                  <li>Comparative analysis of SpCas9 and AsCas12a (Cpf1) orthologs with their unique PAM recognition motifs and editing mechanisms</li>
-                  <li>Investigation of the persistence of large INDELs (insertions/deletions) in CRISPR/Cas gene editing of BCL11A and HBB in in-vivo models</li>
-                  <li>Assessment of how these gene modifications impact red blood cell physiology and therapeutic outcomes</li>
-                </ul>
-                <p>Through this work, we aim to refine gene-editing strategies and enhance understanding of their therapeutic potential for sickle cell disease patients.</p>
-              </div>
-              <div class="image-container">
-                <img src="/images/genomics-research-lab.jpg" alt="CRISPR/Cas Gene Editing Research" />
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <div class="section-divider"></div>
-
-        <section id="alloimmunization-omics" class="research-area alternate">
-          <div class="container">
-            <div class="research-content">
-              <div class="text-content">
-                <h2>Alloimmunization & OMICs</h2>
-                <p>Alloimmunization to transfused red blood cells (RBCs) remains a major challenge for the approximately 5 million patients who require transfusions annually in the USA. This issue is particularly critical for sickle cell disease (SCD) patients who experience increased rates of alloimmunization (up to 30%), require chronic transfusion, and face risks of potentially catastrophic hyperhemolysis.</p>
-                <p>Our comprehensive P01 program aims to address this persistent problem through a multi-faceted approach:</p>
-                <ul class="research-highlights">
-                  <li>Collection of longitudinal samples from a 2,000-patient SCD cohort, tracking key timepoints including steady state, transfusion, and one-month post-transfusion</li>
-                  <li>Investigation of TLR7, TLR9, and anti-nucleic acid antibodies in RBC alloimmunization using a novel SLE mouse model</li>
-                  <li>Exploration of purinergic signaling pathways (CD73, AMP, Adora1, adenosine, Adora2b) that regulate RBC alloimmunization</li>
-                  <li>Study of reticulocytes in donor RBC units and transfusion recipients as risk factors for alloimmunization</li>
-                  <li>Analysis of genetic risk factors through whole genome sequencing and identification of molecular drivers via single-cell RNASeq</li>
-                </ul>
-                <p>This program combines novel translational murine models with clinical samples, creating synergy between approaches that can translate murine findings to humans and model human findings in mice. The research aims to provide near-term benefits by identifying predictors of responder/non-responder patients and long-term benefits by discovering mechanisms that could lead to rational therapy development.</p>
-              </div>
-              <div class="image-container">
-                <img src="/images/alloimmunization-research.jpg" alt="Alloimmunization Research" />
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <div class="section-divider"></div>
-
-        <section id="microfluidics" class="research-area alternate">
-          <div class="container">
-            <div class="research-content">
-              <div class="text-content">
-                <h2>Microfluidics & Functional RBC Assays</h2>
-                <p>The microfluidics projects focus on developing functional red blood cell (RBC) biomarker assays for sickle cell disease (SCD). These projects involve the optimization, analytical validation, and clinical implementation of microfluidic deformability and adhesion assays, which assess RBC mechanical properties and vascular interactions under physiologically relevant conditions.</p>
-                <p>Key focus areas include:</p>
-                <ul class="research-highlights">
-                  <li>Whole blood adhesion microfluidics evaluating RBC interactions with endothelial proteins such as VCAM-1, P-selectin, and laminin, providing insights into vaso-occlusion and disease severity</li>
-                  <li>Next-generation RBC deformability assay development, designed as a more accessible and scalable alternative to ektacytometry</li>
-                  <li>Addressing key limitations in clinical feasibility and real-world implementation of RBC biomarker assays</li>
-                  <li>Establishing quantitative, clinically relevant biomarkers that can be integrated into biomarker-driven clinical trials and advance precision medicine in SCD</li>
-                </ul>
-              </div>
-              <div class="image-container microfluidics-container">
-                <img src="/images/research/microfluidics.png" alt="Microfluidics Research" class="rotated-image" />
-              </div>
-            </div>
-          </div>
-        </section>
+              </section>
+            </>
+          ))}
+        </div>
       </div>
-    </div>
+    )}
   </main>
 
   <style>
-    /* Base styles */
     .page-header {
       background: var(--emory-primary);
       color: white;
@@ -169,8 +147,18 @@ import Layout from '../layouts/Layout.astro';
       position: relative;
     }
 
+    .page-header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+
     .page-header h1 {
-      font-size: 2rem;
+      font-size: 2.5rem;
       margin-bottom: 1rem;
       color: white;
       position: relative;
@@ -178,335 +166,271 @@ import Layout from '../layouts/Layout.astro';
     }
 
     .page-header p {
-      color: white;
+      color: rgba(255, 255, 255, 0.9);
       position: relative;
       z-index: 1;
       max-width: 800px;
       margin: 0 auto;
       font-size: 1rem;
-      padding: 0 1rem;
       line-height: 1.6;
     }
 
-    /* Research layout */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.25rem;
+    }
+
+    .error-section, .empty-section {
+      padding: 4rem 0;
+      background: #f8fafc;
+    }
+
+    .error-message, .empty-message {
+      background: white;
+      border-radius: 12px;
+      padding: 3rem;
+      text-align: center;
+      box-shadow: 0 2px 12px rgba(0, 33, 105, 0.06);
+    }
+
     .research-nav-wrapper {
       display: flex;
       position: relative;
     }
 
-    .research-content-wrapper {
-      flex: 1;
-      width: 100%;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
     .research-nav {
-      width: 240px;
-      padding: 2rem 1rem;
       position: sticky;
       top: 80px;
-      height: calc(100vh - 80px);
-      overflow-y: auto;
-      align-self: flex-start;
-      display: none;
+      height: fit-content;
+      width: 250px;
+      background: white;
+      border-right: 1px solid #e2e8f0;
+      padding: 2rem 0;
     }
 
-    @media (min-width: 1280px) {
-      .research-nav {
-        display: block;
-      }
-      
-      .research-content-wrapper {
-        width: calc(100% - 240px);
-      }
-    }
-
-    .research-nav ul {
+    .research-nav nav ul {
       list-style: none;
       padding: 0;
       margin: 0;
     }
 
-    .research-nav li {
+    .research-nav nav li {
       margin-bottom: 0.5rem;
     }
 
-    .research-nav a {
+    .research-nav nav a {
       display: block;
-      padding: 0.5rem 0.75rem;
+      padding: 0.75rem 1.5rem;
       color: #4a5568;
       text-decoration: none;
-      border-radius: 4px;
-      transition: all 0.2s ease;
-      border-left: 2px solid transparent;
-      font-weight: 500;
-      position: relative;
-      font-size: 0.9rem;
+      border-left: 3px solid transparent;
+      transition: all 0.3s ease;
     }
 
-    .research-nav a:hover {
-      background-color: rgba(1, 33, 105, 0.05);
+    .research-nav nav a:hover {
+      background: #f7fafc;
+      border-left-color: var(--emory-secondary);
       color: var(--emory-primary);
-      border-left-color: var(--emory-primary);
     }
 
-    .research-nav a.active {
-      background-color: rgba(1, 33, 105, 0.1);
-      color: var(--emory-primary);
-      border-left-color: var(--emory-primary);
-      font-weight: 600;
+    .research-content-wrapper {
+      flex: 1;
+      width: 100%;
     }
 
     .section-divider {
-      height: 2rem;
-      background: #f8f9fa;
-      border-top: 1px solid #e9ecef;
-      border-bottom: 1px solid #e9ecef;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #e2e8f0, transparent);
+      margin: 0 2rem;
     }
 
     .research-area {
-      padding: 3.5rem 0;
+      padding: 4rem 0;
       background: white;
-      transition: background-color 0.3s ease;
-      opacity: 0;
-      transform: translateY(20px);
-      transition: opacity 0.5s ease, transform 0.5s ease;
-    }
-
-    .research-area.in-view {
-      opacity: 1;
-      transform: translateY(0);
     }
 
     .research-area.alternate {
-      background: #f8f9fa;
+      background: #f8fafc;
     }
 
     .research-content {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 2.5rem;
+      grid-template-columns: 1fr 300px;
+      gap: 3rem;
       align-items: start;
-      max-width: 1000px;
-      margin: 0 auto;
-      padding: 0 1.5rem;
     }
 
     .text-content h2 {
+      font-size: 2.25rem;
       color: var(--emory-primary);
-      font-size: 1.6rem;
-      margin-bottom: 1.25rem;
+      margin-bottom: 1.5rem;
       position: relative;
-      padding-bottom: 0.5rem;
-      border-bottom: 2px solid #e9ecef;
     }
 
-    .text-content p {
+    .summary {
+      font-size: 1.1rem;
       color: #4a5568;
-      line-height: 1.6;
-      margin-bottom: 1.25rem;
-      font-size: 0.95rem;
+      margin-bottom: 1.5rem;
+      font-weight: 500;
+    }
+
+    .description {
+      color: #4a5568;
+      line-height: 1.7;
+      margin-bottom: 1.5rem;
+    }
+
+    .description p {
+      margin-bottom: 1rem;
+    }
+
+    .description h3 {
+      color: var(--emory-primary);
+      margin: 1.5rem 0 1rem;
+    }
+
+    .description h4 {
+      color: var(--emory-secondary);
+      margin: 1rem 0 0.5rem;
     }
 
     .research-highlights {
-      list-style: none;
-      padding: 0;
-      margin-top: 1.25rem;
-      margin-bottom: 1.25rem;
+      background: #f7fafc;
+      border-left: 4px solid var(--emory-secondary);
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+      border-radius: 0 8px 8px 0;
     }
 
     .research-highlights li {
-      margin: 0.6rem 0;
-      padding-left: 1.5rem;
-      position: relative;
-      line-height: 1.5;
-      color: #2d3748;
-      font-size: 0.95rem;
+      margin-bottom: 0.75rem;
+      color: #4a5568;
+      line-height: 1.6;
     }
 
-    .research-highlights li::before {
-      content: "•";
-      color: var(--emory-primary);
-      position: absolute;
-      left: 0;
-      top: 0;
-      font-size: 1.1rem;
+    .research-highlights li:last-child {
+      margin-bottom: 0;
     }
 
     .image-gallery {
-      display: grid;
-      grid-template-rows: auto auto;
-      gap: 1.25rem;
-    }
-
-    .primary-image, .secondary-image {
-      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
     }
 
     .image-container {
-      position: relative;
+      border-radius: 12px;
       overflow: hidden;
-      border-radius: 0;
-      box-shadow: none;
+      box-shadow: 0 4px 12px rgba(0, 33, 105, 0.1);
     }
 
     .image-container img {
       width: 100%;
       height: auto;
-      max-height: 350px;
-      object-fit: contain;
       display: block;
-      background-color: transparent;
+      transition: transform 0.3s ease;
     }
 
-    /* Mobile styles */
-    @media (max-width: 768px) {
+    .image-container:hover img {
+      transform: scale(1.02);
+    }
+
+    .primary-image {
+      aspect-ratio: 3/2;
+    }
+
+    .secondary-image {
+      aspect-ratio: 4/3;
+    }
+
+    @media (max-width: 1024px) {
+      .research-nav-wrapper {
+        flex-direction: column;
+      }
+
+      .research-nav {
+        position: static;
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #e2e8f0;
+        padding: 1rem 0;
+      }
+
+      .research-nav nav {
+        overflow-x: auto;
+      }
+
+      .research-nav nav ul {
+        display: flex;
+        gap: 1rem;
+        padding: 0 1rem;
+        white-space: nowrap;
+      }
+
+      .research-nav nav li {
+        margin-bottom: 0;
+      }
+
       .research-content {
         grid-template-columns: 1fr;
-        gap: 1.5rem;
-        padding: 0 1rem;
+        gap: 2rem;
       }
 
-      .research-area {
-        padding: 2.5rem 0;
-      }
-
-      .alternate .research-content {
-        display: flex;
-        flex-direction: column-reverse;
+      .image-gallery {
+        flex-direction: row;
+        overflow-x: auto;
+        padding-bottom: 1rem;
       }
 
       .image-container {
-        margin-bottom: 1rem;
-      }
-      
-      .microfluidics-container {
-        height: 350px;
-      }
-      
-      .rotated-image {
-        height: 350px;
+        flex-shrink: 0;
+        width: 250px;
       }
     }
 
-    /* Progress bar */
-    .progress-container {
-      position: fixed;
-      top: 64px;
-      left: 0;
-      width: 100%;
-      height: 3px;
-      background: transparent;
-      z-index: 999;
+    @media (max-width: 768px) {
+      .page-header {
+        padding: 3rem 0 2rem;
+      }
+
+      .page-header h1 {
+        font-size: 2rem;
+      }
+
+      .research-area {
+        padding: 3rem 0;
+      }
+
+      .text-content h2 {
+        font-size: 1.75rem;
+      }
+
+      .image-gallery {
+        flex-direction: column;
+      }
+
+      .image-container {
+        width: 100%;
+      }
     }
 
-    .progress-bar {
-      height: 100%;
-      background: var(--emory-primary);
-      width: 0%;
-      transition: width 0.2s ease;
+    details {
+      margin-top: 1rem;
     }
 
-    .microfluidics-container {
-      position: relative;
-      height: 500px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      box-shadow: none;
-      border-radius: 0;
+    summary {
+      cursor: pointer;
+      color: var(--emory-secondary);
     }
 
-    .rotated-image {
-      transform: rotate(90deg);
-      max-width: none;
-      max-height: none;
-      width: auto;
-      height: 500px;
-      object-fit: contain;
-      background-color: transparent;
+    details p {
+      margin-top: 0.5rem;
+      padding: 1rem;
+      background: #f7fafc;
+      border-radius: 8px;
+      font-family: monospace;
+      font-size: 0.9rem;
     }
   </style>
-
-  <div class="progress-container">
-    <div class="progress-bar" id="progressBar"></div>
-  </div>
-
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const sections = document.querySelectorAll<HTMLElement>('.research-area');
-      const navLinks = document.querySelectorAll<HTMLAnchorElement>('.research-nav a');
-      const progressBar = document.getElementById('progressBar');
-      
-      // Create intersection observer for animations
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('in-view');
-          }
-        });
-      }, {
-        threshold: 0.15, // When 15% of the element is visible
-        rootMargin: '-100px 0px' // Add some margin to trigger earlier
-      });
-      
-      // Observe all research areas
-      sections.forEach(section => {
-        observer.observe(section);
-      });
-      
-      // Highlight the current section in the navigation
-      const highlightActiveSection = () => {
-        const scrollPosition = window.scrollY;
-        const totalHeight = document.body.scrollHeight - window.innerHeight;
-        
-        // Update progress bar
-        if (progressBar) {
-          const scrollPercentage = (scrollPosition / totalHeight) * 100;
-          progressBar.style.width = scrollPercentage + '%';
-        }
-        
-        sections.forEach(section => {
-          const sectionTop = section.offsetTop;
-          const sectionHeight = section.offsetHeight;
-          const sectionId = section.getAttribute('id');
-          
-          if (
-            scrollPosition >= sectionTop - 200 && 
-            scrollPosition < sectionTop + sectionHeight - 200
-          ) {
-            navLinks.forEach(link => {
-              link.classList.remove('active');
-              if (link.getAttribute('href') === `#${sectionId}`) {
-                link.classList.add('active');
-              }
-            });
-          }
-        });
-      };
-      
-      window.addEventListener('scroll', highlightActiveSection);
-      highlightActiveSection(); // Run once on page load
-      
-      // Smooth scroll to section when clicking navigation links
-      navLinks.forEach(link => {
-        link.addEventListener('click', (e) => {
-          e.preventDefault();
-          const targetId = link.getAttribute('href');
-          if (targetId) {
-            const targetSection = document.querySelector<HTMLElement>(targetId);
-            
-            if (targetSection) {
-              window.scrollTo({
-                top: targetSection.offsetTop - 80,
-                behavior: 'smooth'
-              });
-            }
-          }
-        });
-      });
-    });
-  </script>
 </Layout> 

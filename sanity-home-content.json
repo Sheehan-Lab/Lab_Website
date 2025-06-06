@@ -1,0 +1,21 @@
+{
+  "_type": "pageContent",
+  "_id": "home-page-content",
+  "pageId": "home",
+  "title": "Sheehan Lab",
+  "subtitle": "Advancing Sickle Cell Disease Research",
+  "content": [
+    {
+      "_type": "block",
+      "style": "normal",
+      "children": [
+        {
+          "_type": "span",
+          "text": "Welcome to the Sheehan Lab at Emory University School of Medicine. We are dedicated to improving the lives of individuals with sickle cell disease through innovative research and therapeutic development.\n\nOur research spans multiple areas including HbF induction, xenograft models, gene editing, alloimmunization, and microfluidics, all aimed at improving patient outcomes for sickle cell disease patients worldwide."
+        }
+      ]
+    }
+  ],
+  "heroImage": null,
+  "metaDescription": "The Sheehan Lab at Emory University is dedicated to advancing sickle cell disease research through innovative therapeutic approaches and collaborative science."
+}

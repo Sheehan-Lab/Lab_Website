@@ -1,0 +1,186 @@
+[
+  {
+    "_type": "researchArea",
+    "_id": "research-area-1",
+    "title": "IGFBP3 Research",
+    "slug": {
+      "_type": "slug",
+      "current": "igfbp3"
+    },
+    "summary": "Our lab is investigating the crucial role of Insulin-like Growth Factor Binding Protein 3 (IGFBP3) in fetal hemoglobin (HbF) induction as a therapeutic approach for sickle cell disease.",
+    "description": [
+      {
+        "_type": "block",
+        "style": "normal",
+        "children": [
+          {
+            "_type": "span",
+            "text": "This research stems from whole genome sequencing studies that revealed individuals with higher IGFBP3 levels naturally produce more fetal hemoglobin.\n\nThis research provides a promising new therapeutic avenue for sickle cell disease treatment by leveraging the body's natural mechanisms for producing healthier hemoglobin."
+          }
+        ]
+      }
+    ],
+    "highlights": [
+      "Whole genome sequencing identified IGFBP3 as a regulator of HbF production",
+      "Plasma levels of IGFBP3 correlate with HbF production in patient samples",
+      "Adding IGFBP3 to erythroid precursors increases HbF production, as verified in vitro",
+      "IGFBP3 can be targeted therapeutically for SCD treatment",
+      "Vitamin D increases IGFBP3 levels, offering a potential intervention strategy",
+      "IGFBP3 deficiency is common in SCD patients",
+      "IGFBP3-based therapies can be administered in combination with hydroxyurea"
+    ],
+    "primaryImage": {
+      "_type": "image",
+      "localPath": "/images/research/igfbp3.png"
+    },
+    "secondaryImage": {
+      "_type": "image",
+      "localPath": "/images/research/igf2.png"
+    },
+    "order": 1,
+    "published": true
+  },
+  {
+    "_type": "researchArea",
+    "_id": "research-area-2",
+    "title": "NBSGW Xenograft Model",
+    "slug": {
+      "_type": "slug",
+      "current": "xenograft"
+    },
+    "summary": "We are studying HbF induction in vivo using the NBSGW xenograft mouse model to improve engraftment and measure HbF induction with various therapeutic compounds.",
+    "description": [
+      {
+        "_type": "block",
+        "style": "normal",
+        "children": [
+          {
+            "_type": "span",
+            "text": "Our methodology includes engrafting human CD34+ cells from SCD patients into NBSGW mice following busulfan conditioning, with engraftment verified via flow cytometry. Mice with >50% human CD45 cells are treated with either pomalidomide (positive control), vehicle, or Metformin for 12 weeks, after which HbF levels are measured by HPLC and F-cells by flow cytometry."
+          }
+        ]
+      }
+    ],
+    "highlights": [
+      "Optimizing engraftment percentages of human CD34+ cells in the NBSGW mouse model",
+      "Determining HbF induction after administration of drugs like Metformin and Vitamin D",
+      "Developing alternative strategies to induce HbF either in combination with hydroxyurea or as standalone treatments",
+      "Supporting our in vitro work with Metformin through parallel in vivo studies",
+      "Enhancing understanding of pathways involved in fetal hemoglobin induction to identify potential targets for drug development"
+    ],
+    "primaryImage": {
+      "_type": "image",
+      "localPath": "/images/research/mobilization.png"
+    },
+    "secondaryImage": null,
+    "order": 2,
+    "published": true
+  },
+  {
+    "_type": "researchArea",
+    "_id": "research-area-3",
+    "title": "CRISPR/Cas Gene Editing",
+    "slug": {
+      "_type": "slug",
+      "current": "crispr"
+    },
+    "summary": "Gene therapy holds transformative potential for treating sickle cell disease (SCD) by leveraging CRISPR-based methods to induce fetal hemoglobin (HbF) or correct the HBB sickle mutation.",
+    "description": [
+      {
+        "_type": "block",
+        "style": "normal",
+        "children": [
+          {
+            "_type": "span",
+            "text": "Our project focuses on two promising approaches for treating SCD through genetic modification.\n\nThrough this work, we aim to refine gene-editing strategies and enhance understanding of their therapeutic potential for sickle cell disease patients."
+          }
+        ]
+      }
+    ],
+    "highlights": [
+      "An FDA-approved approach that disrupts the BCL11A gene to elevate HbF levels, a method already utilized in ex vivo gene therapy therapies",
+      "The use of R-66S RNP with ssODN for guided HBB gene correction, for which an IND application has been submitted for clinical trial",
+      "Comparative analysis of SpCas9 and AsCas12a (Cpf1) orthologs with their unique PAM recognition motifs and editing mechanisms",
+      "Investigation of the persistence of large INDELs (insertions/deletions) in CRISPR/Cas gene editing of BCL11A and HBB in in-vivo models",
+      "Assessment of how these gene modifications impact red blood cell physiology and therapeutic outcomes"
+    ],
+    "primaryImage": {
+      "_type": "image",
+      "localPath": "/images/genomics-research-lab.jpg"
+    },
+    "secondaryImage": null,
+    "order": 3,
+    "published": true
+  },
+  {
+    "_type": "researchArea",
+    "_id": "research-area-4",
+    "title": "Alloimmunization & OMICs",
+    "slug": {
+      "_type": "slug",
+      "current": "alloimmunization-omics"
+    },
+    "summary": "Alloimmunization to transfused red blood cells (RBCs) remains a major challenge for the approximately 5 million patients who require transfusions annually in the USA.",
+    "description": [
+      {
+        "_type": "block",
+        "style": "normal",
+        "children": [
+          {
+            "_type": "span",
+            "text": "This issue is particularly critical for sickle cell disease (SCD) patients who experience increased rates of alloimmunization (up to 30%), require chronic transfusion, and face risks of potentially catastrophic hyperhemolysis.\n\nThis program combines novel translational murine models with clinical samples, creating synergy between approaches that can translate murine findings to humans and model human findings in mice. The research aims to provide near-term benefits by identifying predictors of responder/non-responder patients and long-term benefits by discovering mechanisms that could lead to rational therapy development."
+          }
+        ]
+      }
+    ],
+    "highlights": [
+      "Collection of longitudinal samples from a 2,000-patient SCD cohort, tracking key timepoints including steady state, transfusion, and one-month post-transfusion",
+      "Investigation of TLR7, TLR9, and anti-nucleic acid antibodies in RBC alloimmunization using a novel SLE mouse model",
+      "Exploration of purinergic signaling pathways (CD73, AMP, Adora1, adenosine, Adora2b) that regulate RBC alloimmunization",
+      "Study of reticulocytes in donor RBC units and transfusion recipients as risk factors for alloimmunization",
+      "Analysis of genetic risk factors through whole genome sequencing and identification of molecular drivers via single-cell RNASeq"
+    ],
+    "primaryImage": {
+      "_type": "image",
+      "localPath": "/images/alloimmunization-research.jpg"
+    },
+    "secondaryImage": null,
+    "order": 4,
+    "published": true
+  },
+  {
+    "_type": "researchArea",
+    "_id": "research-area-5",
+    "title": "Microfluidics & Functional RBC Assays",
+    "slug": {
+      "_type": "slug",
+      "current": "microfluidics"
+    },
+    "summary": "The microfluidics projects focus on developing functional red blood cell (RBC) biomarker assays for sickle cell disease (SCD).",
+    "description": [
+      {
+        "_type": "block",
+        "style": "normal",
+        "children": [
+          {
+            "_type": "span",
+            "text": "These projects involve the optimization, analytical validation, and clinical implementation of microfluidic deformability and adhesion assays, which assess RBC mechanical properties and vascular interactions under physiologically relevant conditions."
+          }
+        ]
+      }
+    ],
+    "highlights": [
+      "Whole blood adhesion microfluidics evaluating RBC interactions with endothelial proteins such as VCAM-1, P-selectin, and laminin, providing insights into vaso-occlusion and disease severity",
+      "Next-generation RBC deformability assay development, designed as a more accessible and scalable alternative to ektacytometry",
+      "Addressing key limitations in clinical feasibility and real-world implementation of RBC biomarker assays",
+      "Establishing quantitative, clinically relevant biomarkers that can be integrated into biomarker-driven clinical trials and advance precision medicine in SCD"
+    ],
+    "primaryImage": {
+      "_type": "image",
+      "localPath": "/images/research/microfluidics.png"
+    },
+    "secondaryImage": null,
+    "order": 5,
+    "published": true
+  }
+]

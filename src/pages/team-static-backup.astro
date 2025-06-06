@@ -1,0 +1,830 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+interface TeamMember {
+  name: string;
+  role: string;
+  bio: string;
+  email: string;
+  image?: string;
+  group: 'pi' | 'lab_manager' | 'faculty' | 'research_staff';
+}
+
+const teamMembers: TeamMember[] = [
+  { 
+    name: "Dr. Vivien A. Sheehan", 
+    role: "Principal Investigator",
+    group: "pi", 
+    bio: "Dr. Vivien Sheehan is a physician scientist dedicated to improving the lives of individuals with sickle cell disease of all ages. Vivien earned a PhD in Biochemistry from Texas A&M before entering medical school at Emory University School of Medicine. At Emory, Dr. Sheehan was inspired by her patients with sickle cell disease, and decided to devote her career to sickle cell research and patient care.\n\nShe then went on to complete a med-peds residency and two fellowships, pediatric Heme Onc at St Jude Children's Research Hospital and Internal Medicine Hematology at the University of Tennessee. Dr. Sheehan spent 8 years at Baylor College of Medicine, developing her research program, which includes omics, transition from acute to chronic pain, fetal hemoglobin regulation, gene therapy and red cell rheology research.\n\nVivien moved to Atlanta in 2020 and is now an Associate Professor of Pediatrics at Emory University School of Medicine, where she directs their translational sickle cell disease research program.",
+    email: "vivien.sheehan@emory.edu",
+    image: "/images/headshots/vivien.png"
+  },
+  { 
+    name: "Britney Hernandez", 
+    role: "Lab Manager",
+    group: "lab_manager", 
+    bio: "Lab manager overseeing daily operations and project management.",
+    email: "britney.hernandez@emory.edu",
+    image: "/images/headshots/britney.png"
+  },
+  { 
+    name: "Dr. Justin J. Yoo", 
+    role: "Junior Faculty",
+    group: "faculty", 
+    bio: "Junior faculty member leading multiple research initiatives.",
+    email: "justin.yoo@emory.edu",
+    image: "/images/headshots/justin.jpg"
+  },
+  { 
+    name: "Dr. Ashwin P. Patel", 
+    role: "Research Assistant Professor",
+    group: "faculty", 
+    bio: "Research Assistant Professor focusing on statistical analysis and clinical study design.",
+    email: "ashwin.patel@emory.edu",
+    image: "/images/headshots/ashwin.png"
+  },
+  {
+    name: "Dr. Ugochukwu Agbakwuru, MD, MPH",
+    role: "Pediatric Hematology/Oncology Fellow",
+    group: "faculty",
+    bio: "Clinical fellow focusing on sickle cell disease research.",
+    email: "ugo.agbakwuru@emory.edu",
+    image: "/images/headshots/agbakwuru-ugochukwu.png"
+  },
+  { 
+    name: "Dr. Kennedy N. Goldsborough", 
+    role: "Post-doctoral Fellow",
+    group: "faculty", 
+    bio: "Kennedy Goldsborough, Ph.D. is a postdoctoral researcher in the FIRST Program at Emory University School of Medicine's Department of Pediatrics. She conducts translational research on acute and chronic pain in sickle cell disease (SCD) using humanized mouse models and investigates therapeutic strategies that improve red blood cell health and function and/or reduce neuroinflammation. Her work focuses on developing non-opioid disease-modifying therapies to address pain in SCD. Dr. Goldsborough is also working to identify biomarkers that distinguish acute pain from baseline and disease severity and evaluate treatment efficacy. As a FIRST Program scholar, she is part of a NIH-funded initiative dedicated to fostering inclusive excellence in biomedical research through structured mentorship, professional development, and leadership training. Kennedy, known by her students as Dr. G, is also a biochemistry instructor at Spelman College, where she is committed to mentorship and continues to guide undergraduate researchers in experimental design, data analysis, and scientific communication. Through her work, she aims to advance novel pain management strategies for SCD while fostering the next generation of scientists.",
+    email: "kennedy.goldsborough@emory.edu",
+    image: "/images/headshots/kennedy.png"
+  },
+  { 
+    name: "Dr. Anupama Priyadarshini", 
+    role: "Staff Scientist",
+    group: "research_staff", 
+    bio: "Dr. Anupama Priyadarshini, Ph.D. is a Research Scientist interested in finding the novel mechanism and pathways involved in HbF induction in SCD patients. She is studying the role of IGFBP3 in HbF induction in HSPCs from SCD patients and HbF induction in vivo using NBSGW mice xenograft models. She is also involved in other ongoing clinical research projects in the lab.\n\nBefore joining Dr. Sheehan, she has worked as a Postdoctoral associate at the School of Medicine, Nephrology, Yale University, New Haven, CT, USA. and as a Research Scholar and Postdoctoral Fellow at the Department of Inflammation and Immunity, Cleveland Clinic, Cleveland, Ohio.\n\nShe would like to advance her career in SCD Research and through her expertise in molecular and cellular biology research will work on identifying novel HbF inducing strategies by improving the understanding of gamma-globin regulation that can lead to improvement in the life of SCD Patients.",
+    email: "anupama.priyadarshini@emory.edu",
+    image: "/images/headshots/anupama.png"
+  },
+  { 
+    name: "Erica E. Evans", 
+    role: "Research Assistant",
+    group: "research_staff", 
+    bio: "Erica Evans, MBA is a research specialist specializing in microfluidic technology and red blood cell (RBC) biomarker development for sickle cell disease (SCD) and other hematological disorders. She leads the microfluidic projects with efforts to optimize, validate, and implement novel microfluidic assays designed to assess RBC adhesion to physiologically relevant proteins. Her work focuses on translating these technologies into clinically meaningful tools, improving treatment monitoring, and clinical trial design. She currently oversees the rheology assessments in Afimmune's clinical trial of their novel therapeutic agent for SCD. She has presented her research at the American Society of Hematology (ASH) conference among others and has contributed to multiple peer-reviewed publications.",
+    email: "erica.evans@emory.edu",
+    image: "/images/headshots/erica.png"
+  },
+  { 
+    name: "Michael 'Alex' Pendergast", 
+    role: "MSP Graduate Student",
+    group: "research_staff", 
+    bio: "Molecular & Systems Pharmacology doctoral student at Emory University focusing on work improving safety and efficacy of gene therapies in hematological disorders.",
+    email: "alex.pendergast@emory.edu",
+    image: "/images/headshots/alex.png"
+  },
+  { 
+    name: "Zak Kostamo", 
+    role: "Research Specialist",
+    group: "research_staff", 
+    bio: "Hello, my name is Zak Kostamo, and I have been with the lab since 7/2022. I am a Research Specialist mainly interested in novel drug and gene therapy development for SCD. I have published with Nature Communications evaluating Hb-Makassar in a mouse model as a potential gene therapy in collaboration with Beam Therapeutics. In addition to mouse work, I work to extract CD34+ cells from non-mobilized patients with sickle cell for use in erythroid cultures, gene therapy experiments, and xenografts.",
+    email: "zak.kostamo@emory.edu",
+    image: "/images/headshots/zak.png"
+  },
+  { 
+    name: "Jonathan Wade", 
+    role: "Research Specialist",
+    group: "research_staff", 
+    bio: "Jonathan is a Research Specialist in the Sheehan Lab. His bench work includes LoRRca ektacytometry, flow cytometry, and mouse bone marrow engraftment studies evaluating novel therapeutics. Additionally, Jonathan has developed tools in R to streamline data preprocessing and quality control and contributes to database integration and design for the lab's growing OMICs database. He earned his B.S. in Neuroscience from Furman University and will be enrolling in medical school this fall.",
+    email: "jwwade@emory.edu",
+    image: "/images/headshots/jonathanwade.jpeg"
+  },
+  { 
+    name: "Kathleen Romero", 
+    role: "Research Specialist",
+    group: "research_staff", 
+    bio: "Research specialist supporting lab projects.",
+    email: "kathleen.romero@emory.edu"
+  },
+  { 
+    name: "Mary C. Aliche", 
+    role: "Research Specialist",
+    group: "research_staff", 
+    bio: "Mary is a Research Specialist in the Sheehan Lab. Her work involves functional viscosity assays assessing red blood cell polymerization, supporting gene therapy research focused on novel treatments. Additionally, she performs flow cytometry to aid in Afimmune's clinical trial of their novel therapeutic agent for SCD, as well as assisting in mice bone marrow engraftment studies. Mary earned her B.S in Cell and Developmental Biology from the University of California, Santa Barabara. She is particularly interested in genetic approaches to therapeutic development and plans to pursue an MD/PhD in genetics or a related field",
+    email: "mary.aliche@emory.edu",
+    image: "/images/headshots/mary.jpg"
+  },
+  { 
+    name: "Jedidah G. Titus", 
+    role: "Research Specialist",
+    group: "research_staff", 
+    bio: "Jedidah is a research specialist who works in red cell function testing. She also assists with the mobilization project as needed. She graduated from Georgia Institute of Technology in Spring 2024 with a Bachelor of Science degree in Biomedical Engineering. In the future, Jedidah plans to pursue a PhD. In her free time, she enjoys writing, reading books and comics, drawing, and listening to music.",
+    email: "jedidah.titus@emory.edu",
+    image: "/images/headshots/jedidah.jpg"
+  },
+  { 
+    name: "Srija Ponna", 
+    role: "Research Specialist",
+    group: "research_staff", 
+    bio: "Research specialist working on microfluidics projects.",
+    email: "srija.ponna@emory.edu",
+    image: "/images/headshots/srija.png"
+  },
+  { 
+    name: "Akshay Patwardhan", 
+    role: "Research Specialist (Part-Time)",
+    group: "research_staff", 
+    bio: "Part-time research specialist.",
+    email: "akshay.patwardhan@emory.edu",
+    image: "/images/headshots/akshay.png"
+  },
+  {
+    name: "Nav Pasupuleti",
+    role: "Undergraduate Research Assistant",
+    group: "research_staff",
+    bio: "Part-time undergraduate research assistant supporting lab projects.",
+    email: "nav.bharucha@emory.edu",
+    image: "/images/headshots/nav.jpg"
+  },
+  {
+    name: "Monica Rivera, BS",
+    role: "MPH Student",
+    group: "research_staff",
+    bio: "Monica Rivera, BS, is a first-year Master of Public Health student at the Rollins School of Public Health at Emory University, graduating in May 2026. Her public health interests include biostatistics, epidemiology, bioinformatics, healthcare administration, data analytics, and health policy to improve all dimensions of health and outcomes for patients with Sickle Cell Disease and Anemia. Her tasks in the Sheehan lab include data cleaning, entry, management, and analysis using data collection software and statistical programs like REDCap, R, SAS, GraphPad PRISM, Excel, PowerBI, and similar research tools.",
+    email: "monica.rivera@emory.edu",
+    image: "/images/headshots/monica.jpg"
+  }
+];
+
+// Add placeholder images for team members without images
+teamMembers.forEach(member => {
+  if (!member.image) {
+    member.image = "/images/headshots/placeholder-headshot.png";
+  }
+});
+
+const groupOrder = ['pi', 'lab_manager', 'faculty', 'research_staff'] as const;
+const groupTitles = {
+  pi: 'Principal Investigator',
+  lab_manager: 'Lab Management',
+  faculty: 'Faculty & Fellows',
+  research_staff: 'Research Staff'
+};
+
+// Group members by their role
+const groupedMembers = groupOrder.reduce((acc, group) => {
+  acc[group] = teamMembers.filter(member => member.group === group);
+  return acc;
+}, {} as Record<typeof groupOrder[number], TeamMember[]>);
+---
+
+<Layout title="Our Team | Sheehan Lab">
+  <main>
+    <section class="page-header">
+      <div class="container">
+        <h1>Our Team</h1>
+        <p>Meet our passionate team of researchers</p>
+      </div>
+    </section>
+
+    {groupOrder.map(group => {
+      const members = groupedMembers[group];
+      if (members.length === 0) return null;
+
+      return (
+        <section class={`team-section ${group}`}>
+          <div class="container">
+            <h2 class="section-title">{groupTitles[group]}</h2>
+            <div class={`team-grid ${group === 'pi' ? 'featured' : ''}`}>
+              {members.map((member) => (
+                <div class="team-member">
+                  <div class="member-card">
+                    <div class="member-image">
+                      <img src={member.image} alt={`${member.name} headshot`} />
+                    </div>
+                    <div class="member-info">
+                      <h3>{member.name}</h3>
+                      <p class="role">{member.role}</p>
+                      <button class="expand-button" aria-label="Show more details">
+                        <span class="icon">↓</span>
+                      </button>
+                    </div>
+                    <div class="member-details">
+                      <div class="bio-section">
+                        {(() => {
+                          const fullBio = member.bio;
+                          const paragraphs = fullBio.split('\n\n');
+                          
+                          // Check if bio is long enough to need truncation
+                          if (fullBio.length > 150) {
+                            const firstParagraph = paragraphs[0];
+                            let visibleContent, hiddenContent;
+                            
+                            // If first paragraph is longer than 150 chars, truncate it
+                            if (firstParagraph.length > 150) {
+                              visibleContent = (
+                                <p class="truncated-text">{firstParagraph.substring(0, 150)}...</p>
+                              );
+                              
+                              hiddenContent = (
+                                <>
+                                  <p>{firstParagraph}</p>
+                                  {paragraphs.slice(1).map(paragraph => <p>{paragraph}</p>)}
+                                </>
+                              );
+                            } 
+                            // Otherwise show first paragraph and hide the rest
+                            else {
+                              visibleContent = <p>{firstParagraph}</p>;
+                              hiddenContent = paragraphs.slice(1).map(paragraph => <p>{paragraph}</p>);
+                            }
+                            
+                            return (
+                              <>
+                                <div class="visible-content">
+                                  {visibleContent}
+                                </div>
+                                <div class="hidden-content">
+                                  {hiddenContent}
+                                </div>
+                                <button class="read-more-btn">
+                                  <span class="read-more-text">Read more</span>
+                                  <span class="read-less-text">Read less</span>
+                                  <span class="read-more-icon">↓</span>
+                                </button>
+                              </>
+                            );
+                          } else {
+                            // If bio is short, just display it all
+                            return paragraphs.map(paragraph => <p>{paragraph}</p>);
+                          }
+                        })()}
+                      </div>
+                      <div class="contact-section">
+                        <h4>Contact</h4>
+                        <a href={`mailto:${member.email}`} class="email-link">
+                          <span class="icon">✉</span>
+                          {member.email}
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      );
+    })}
+
+    <section class="join-team">
+      <div class="container">
+        <h2>Join Our Team</h2>
+        <p>We're always looking for passionate researchers to join our mission in advancing sickle cell disease treatment.</p>
+        <div class="cta-buttons">
+          <a href="/positions" class="button primary">View Open Positions</a>
+          <a href="/contact" class="button secondary">Contact Us</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <style>
+    .page-header {
+      background: url('/images/team/group/sheehan-lab-team-2024.jpg') center/cover;
+      position: relative;
+      padding: 8rem 2rem 6rem;
+      margin-top: 60px;
+      text-align: center;
+      position: relative;
+      background-attachment: fixed;
+      min-height: 50vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .page-header .container {
+      position: relative;
+      z-index: 2;
+      animation: fadeIn 1s ease-out;
+    }
+
+    .page-header h1 {
+      font-size: 2.8rem;
+      color: white;
+      margin-bottom: 1rem;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    }
+
+    .page-header p {
+      color: rgba(255,255,255,0.9);
+      font-size: 1.25rem;
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .page-header {
+        padding: 6rem 1rem 3rem;
+        min-height: 35vh;
+        background-attachment: scroll;
+      }
+
+      .page-header h1 {
+        font-size: 2.2rem;
+      }
+
+      .page-header p {
+        font-size: 1.1rem;
+      }
+
+      .section-title {
+        font-size: 1.5rem;
+      }
+
+      .team-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .member-image {
+        height: 200px;
+      }
+
+      .cta-buttons {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .button {
+        width: 100%;
+        max-width: 300px;
+        text-align: center;
+      }
+    }
+
+    .team-section {
+      padding: 3.5rem 0;
+    }
+
+    .team-section:nth-child(odd) {
+      background: #f8fafc;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    .section-title {
+      color: var(--emory-primary);
+      font-size: 1.75rem;
+      text-align: center;
+      margin-bottom: 2.5rem;
+      position: relative;
+    }
+
+    .section-title::after {
+      content: '';
+      position: absolute;
+      bottom: -0.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 50px;
+      height: 2px;
+      background: var(--emory-primary);
+      border-radius: 2px;
+    }
+
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+    }
+
+    .team-grid.featured, 
+    .lab_manager .team-grid {
+      display: flex;
+      justify-content: center;
+      max-width: 750px;
+      margin: 0 auto;
+    }
+
+    .lab_manager .team-member {
+      width: 320px;
+    }
+
+    .member-card {
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 3px 5px rgba(0, 0, 0, 0.08);
+      transition: all 0.3s ease;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .featured .member-card {
+      display: flex;
+      flex-direction: column;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    .member-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .member-image {
+      width: 100%;
+      height: 270px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .featured .member-image {
+      height: 300px;
+    }
+
+    .member-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 25%;
+      transition: transform 0.3s ease;
+    }
+
+    .member-info {
+      padding: 1.25rem;
+      text-align: center;
+      position: relative;
+      background: white;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .featured .member-info {
+      text-align: center;
+      padding: 1.75rem;
+    }
+
+    .member-info h3 {
+      color: var(--emory-primary);
+      font-size: 1.25rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .featured .member-info h3 {
+      font-size: 1.5rem;
+    }
+
+    .role {
+      color: #4a5568;
+      font-size: 0.95rem;
+      font-weight: 500;
+      margin-bottom: 1rem;
+    }
+
+    .featured .role {
+      font-size: 1.1rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .expand-button {
+      background: none;
+      border: none;
+      color: var(--emory-primary);
+      cursor: pointer;
+      padding: 0.5rem;
+      transition: transform 0.3s ease;
+      margin-top: auto;
+      opacity: 0.7;
+    }
+
+    .expand-button:hover {
+      opacity: 1;
+    }
+
+    .expand-button .icon {
+      display: inline-block;
+      transition: transform 0.3s ease;
+    }
+
+    .member-details {
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      background: #f8fafc;
+      border-top: 1px solid #e2e8f0;
+    }
+
+    .member-details.active {
+      max-height: 2000px;
+      opacity: 1;
+    }
+
+    .bio-section {
+      padding: 1.25rem;
+      text-align: left;
+      position: relative;
+    }
+
+    .bio-section p {
+      color: #2d3748;
+      line-height: 1.5;
+      margin-bottom: 0.75rem;
+      font-size: 0.95rem;
+    }
+
+    .visible-content {
+      position: relative;
+    }
+
+    .truncated-text {
+      position: relative;
+    }
+
+    .truncated-text::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 30%;
+      height: 1.5em;
+      background: linear-gradient(to right, rgba(248, 249, 250, 0), rgba(248, 249, 250, 1));
+      pointer-events: none;
+    }
+
+    .bio-section .hidden-content {
+      display: none;
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+
+    .bio-section.expanded .visible-content {
+      display: none;
+    }
+
+    .bio-section.expanded .hidden-content {
+      display: block;
+      animation: fadeSlideIn 0.5s ease-in-out forwards;
+    }
+
+    @keyframes fadeSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .read-more-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: none;
+      border: none;
+      color: var(--emory-primary);
+      font-weight: 600;
+      cursor: pointer;
+      padding: 0.5rem 0;
+      margin-bottom: 0.5rem;
+      position: relative;
+      overflow: hidden;
+      font-size: 0.95rem;
+      transition: all 0.25s ease;
+    }
+
+    .read-more-btn::after {
+      content: '';
+      position: absolute;
+      bottom: 6px;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      background-color: var(--emory-primary);
+      transform: scaleX(0.3);
+      opacity: 0.7;
+      transform-origin: left;
+      transition: all 0.3s ease;
+    }
+
+    .read-more-btn:hover {
+      color: var(--emory-primary-dark, #001c55);
+    }
+
+    .read-more-btn:hover::after {
+      transform: scaleX(1);
+      opacity: 1;
+    }
+
+    .read-more-btn .read-less-text {
+      display: none;
+    }
+
+    .bio-section.expanded .read-more-text {
+      display: none;
+    }
+
+    .bio-section.expanded .read-less-text {
+      display: inline;
+    }
+
+    .read-more-btn .read-more-icon {
+      transition: transform 0.3s ease;
+    }
+
+    .bio-section.expanded .read-more-icon {
+      transform: rotate(180deg);
+    }
+
+    .contact-section {
+      padding: 0 1.5rem 1.5rem;
+      border-top: 1px solid #e2e8f0;
+    }
+
+    .contact-section h4 {
+      margin-top: 1rem;
+      margin-bottom: 0.5rem;
+      color: var(--emory-primary);
+    }
+
+    .email-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #4a5568;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .email-link:hover {
+      color: var(--emory-primary);
+    }
+
+    .join-team {
+      background: white;
+      padding: 3.5rem 0;
+      text-align: center;
+    }
+
+    .cta-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-top: 2rem;
+    }
+
+    .button {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      border-radius: 4px;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      font-size: 0.95rem;
+    }
+
+    .button.primary {
+      background: var(--emory-primary);
+      color: white;
+    }
+
+    .button.secondary {
+      background: transparent;
+      color: var(--emory-primary);
+      border: 2px solid var(--emory-primary);
+    }
+
+    .button:hover {
+      transform: translateY(-2px);
+    }
+
+    @media (max-width: 992px) {
+      .featured .member-card {
+        grid-template-columns: 1fr;
+      }
+
+      .featured .member-image {
+        height: 300px;
+      }
+
+      .featured .member-info {
+        text-align: center;
+      }
+    }
+  </style>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const members = document.querySelectorAll('.team-member');
+      
+      members.forEach((member) => {
+        const button = member.querySelector('.expand-button');
+        const details = member.querySelector('.member-details');
+        const icon = button?.querySelector('.icon');
+        
+        // Function to open details section
+        const openDetails = () => {
+          if (!details) return;
+          
+          // Close all other open details
+          document.querySelectorAll('.member-details.active').forEach(detail => {
+            if (detail !== details) {
+              detail.classList.remove('active');
+              const memberIcon = detail.closest('.team-member')?.querySelector('.icon');
+              if (memberIcon instanceof HTMLElement) {
+                memberIcon.style.transform = 'rotate(0deg)';
+              }
+              
+              // Also collapse any expanded bio sections
+              const bioSection = detail.closest('.team-member')?.querySelector('.bio-section');
+              if (bioSection) {
+                bioSection.classList.remove('expanded');
+              }
+            }
+          });
+
+          // Toggle the clicked details
+          details.classList.add('active');
+          if (icon instanceof HTMLElement) {
+            icon.style.transform = 'rotate(180deg)';
+          }
+          
+          // Scroll into view if not fully visible
+          setTimeout(() => {
+            const rect = member.getBoundingClientRect();
+            const isFullyVisible = 
+              rect.top >= 0 &&
+              rect.bottom <= window.innerHeight;
+            
+            if (!isFullyVisible) {
+              member.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+          }, 100);
+        };
+        
+        if (button && details && icon) {
+          button.addEventListener('click', (e) => {
+            e.preventDefault();
+            const wasActive = details.classList.contains('active');
+            
+            if (wasActive) {
+              details.classList.remove('active');
+              if (icon instanceof HTMLElement) {
+                icon.style.transform = 'rotate(0deg)';
+              }
+            } else {
+              openDetails();
+            }
+          });
+        }
+
+        // Read more functionality
+        const readMoreBtn = member.querySelector('.read-more-btn');
+        const bioSection = member.querySelector('.bio-section');
+        
+        if (readMoreBtn && bioSection) {
+          readMoreBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            
+            // Toggle expanded class on bio section
+            bioSection.classList.toggle('expanded');
+            
+            // When collapsing, scroll to ensure the member card is visible
+            if (!bioSection.classList.contains('expanded')) {
+              setTimeout(() => {
+                const rect = member.getBoundingClientRect();
+                if (rect.top < 0) {
+                  member.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+              }, 50);
+            }
+          });
+        }
+      });
+    });
+  </script>
+</Layout>

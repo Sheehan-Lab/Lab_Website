@@ -6,12 +6,19 @@
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro build",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "sanity:dev": "cd sheehan-lab-website && npm run dev",
+    "sanity:build": "cd sheehan-lab-website && npm run build",
+    "sanity:deploy": "cd sheehan-lab-website && npx sanity deploy"
   },
   "dependencies": {
     "@astrojs/react": "^4.2.0",
+    "@sanity/client": "^6.10.0",
+    "@sanity/image-url": "^1.0.2",
+    "@sanity/vision": "^3.20.0",
     "astro": "^4.4.0",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "sanity": "^3.20.0"
   }
 }
