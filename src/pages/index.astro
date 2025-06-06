@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import PhotoGallery from '../components/PhotoGallery.astro';
 import { getPageContent, getFeaturedPublications, urlFor } from '../utils/sanity';
 
 // Fetch home page content and featured publications from Sanity CMS
@@ -17,118 +18,70 @@ try {
   console.error('Error fetching home page content:', e);
 }
 
-// Fallback content if CMS is not configured
-const fallbackContent = {
-  title: "Sheehan Lab",
-  subtitle: "Advancing Sickle Cell Disease Research",
-  content: [
-    {
-      _type: 'block',
-      children: [{ text: "Welcome to the Sheehan Lab at Emory University School of Medicine. We are dedicated to improving the lives of individuals with sickle cell disease through innovative research and therapeutic development." }]
-    }
-  ]
-};
+const displayContent = pageContent || {};
 
-const displayContent = pageContent || fallbackContent;
-
-// Helper function to render portable text as simple HTML
-function renderPortableText(blocks) {
-  if (!blocks) return '';
-  
-  return blocks.map(block => {
-    if (block._type === 'block') {
-      const children = block.children?.map(child => {
-        let text = child.text || '';
-        if (child.marks?.includes('strong')) text = `<strong>${text}</strong>`;
-        if (child.marks?.includes('em')) text = `<em>${text}</em>`;
-        return text;
-      }).join('') || '';
-      
-      switch (block.style) {
-        case 'h1': return `<h2>${children}</h2>`;
-        case 'h2': return `<h3>${children}</h3>`;
-        case 'h3': return `<h4>${children}</h4>`;
-        default: return `<p>${children}</p>`;
-      }
-    }
-    return '';
-  }).join('');
-}
+const labPhotos = [
+  { src: '/images/team/group/lab-group-formal.jpg', alt: 'Sheehan Lab Group Photo' },
+  { src: '/images/events/lab-members-at-first-conference.jpg', alt: 'Lab Members at Conference' },
+  { src: '/images/events/student-proudly-standing-infront-of-poster.jpg', alt: 'Student with Research Poster' },
+  { src: '/images/events/post-doc-with-poster.jpg', alt: 'Post-doc Presentation' },
+  { src: '/images/events/pi-standing-with-panel-of-colleges-at-conference.jpg', alt: 'Dr. Sheehan at Conference Panel' },
+  { src: '/images/events/lab-dinner.jpg', alt: 'Lab Dinner' },
+  { src: '/images/events/mumbai-themed-night.jpg', alt: 'Mumbai Theme Night' },
+  { src: '/images/events/lab-outing.jpg', alt: 'Lab Outing' }
+];
 ---
 
 <Layout title={`${displayContent.title || 'Home'} | Sheehan Lab`}>
   <main>
     <section class="hero">
-      <div class="hero-background">
-        {displayContent.heroImage ? (
-          <img 
-            src={urlFor(displayContent.heroImage).width(1920).height(1080).quality(85).url()} 
-            alt={displayContent.title}
-            class="hero-image"
-          />
-        ) : (
-          <div class="hero-pattern"></div>
-        )}
-        <div class="hero-overlay"></div>
-      </div>
       <div class="hero-content">
-        <div class="container">
-          <h1>{displayContent.title}</h1>
-          {displayContent.subtitle && <p class="hero-subtitle">{displayContent.subtitle}</p>}
-          <div class="hero-actions">
-            <a href="/research-cms" class="cta-button primary">Our Research</a>
-            <a href="/team-cms" class="cta-button secondary">Meet the Team</a>
-          </div>
+        <h1>{displayContent.title || 'Sheehan Lab'}</h1>
+        <p class="subtitle">{displayContent.subtitle || 'Advancing Sickle Cell Disease Research and Treatment'}</p>
+        <div class="hero-buttons">
+          <a href="/research" class="button explore-research-btn">Explore Our Research</a>
+          <a href="/publications" class="button view-publications-btn">View Publications</a>
         </div>
       </div>
     </section>
 
-    {error && (
-      <section class="info-section">
-        <div class="container">
-          <div class="info-message">
-            <h2>🔧 CMS Configuration</h2>
-            <p>This page is powered by Sanity CMS. Configure the CMS to customize this content.</p>
-            <details>
-              <summary>Technical details</summary>
-              <p>{error}</p>
-            </details>
-          </div>
-        </div>
-      </section>
-    )}
-
-    <section class="content-section">
+    <section class="mission">
       <div class="container">
-        <div class="content-grid">
-          <div class="main-content">
-            {displayContent.content && (
-              <div class="content-text" set:html={renderPortableText(displayContent.content)} />
-            )}
+        <h2>Our Mission</h2>
+        <p>The Sheehan Lab is dedicated to developing and improving therapies for individuals living with sickle cell disease. Our multifaceted approach combines genomics, clinical research, and innovative biomarker development to better understand and treat this complex disease.</p>
+      </div>
+    </section>
+
+    <section class="research-highlights">
+      <div class="container">
+        <h2>Research Focus</h2>
+        <div class="highlight-grid">
+          <div class="highlight-card">
+            <div class="card-icon">🔬</div>
+            <h3>Pain Management</h3>
+            <p>Investigating genetic factors in chronic pain development and biomarker research.</p>
           </div>
-          <div class="sidebar">
-            <div class="quick-links">
-              <h3>Quick Links</h3>
-              <ul>
-                <li><a href="/research-cms">Research Areas</a></li>
-                <li><a href="/publications-cms">Publications</a></li>
-                <li><a href="/team-cms">Our Team</a></li>
-                <li><a href="/positions">Open Positions</a></li>
-                <li><a href="/contact">Contact Us</a></li>
-              </ul>
-            </div>
+          <div class="highlight-card">
+            <div class="card-icon">🧪</div>
+            <h3>Biomarker Development</h3>
+            <p>Creating new methods to evaluate red cell function and therapy effectiveness.</p>
+          </div>
+          <div class="highlight-card">
+            <div class="card-icon">🩸</div>
+            <h3>Gene-Based Therapies</h3>
+            <p>Evaluating and improving gene therapy approaches for better patient outcomes.</p>
           </div>
         </div>
       </div>
     </section>
 
     {featuredPublications.length > 0 && (
-      <section class="featured-section">
+      <section class="latest-updates">
         <div class="container">
           <h2>Latest Research</h2>
-          <div class="featured-grid">
-            {featuredPublications.slice(0, 3).map((pub) => (
-              <article class="featured-publication">
+          <div class="updates-content">
+            {featuredPublications.slice(0, 1).map((pub) => (
+              <article class="latest-publication">
                 <h3>{pub.title}</h3>
                 <p class="authors">{pub.authors.slice(0, 3).join(', ')}{pub.authors.length > 3 ? ', et al.' : ''}</p>
                 <p class="journal">{pub.journal} ({pub.year})</p>
@@ -147,418 +100,82 @@ function renderPortableText(blocks) {
               </article>
             ))}
           </div>
-          <div class="section-footer">
-            <a href="/publications-cms" class="cta-link">View All Publications →</a>
+           <div class="section-footer">
+            <a href="/publications" class="cta-link">View All Publications →</a>
           </div>
         </div>
       </section>
     )}
 
-    <section class="research-preview">
-      <div class="container">
-        <h2>Our Research Focus</h2>
-        <div class="research-areas">
-          <div class="research-card">
-            <div class="research-icon">🧬</div>
-            <h3>Gene Therapy</h3>
-            <p>Developing innovative gene editing approaches for sickle cell disease treatment.</p>
-          </div>
-          <div class="research-card">
-            <div class="research-icon">🔬</div>
-            <h3>HbF Induction</h3>
-            <p>Investigating fetal hemoglobin induction as a therapeutic strategy.</p>
-          </div>
-          <div class="research-card">
-            <div class="research-icon">🩸</div>
-            <h3>RBC Function</h3>
-            <p>Studying red blood cell mechanics and function using microfluidics.</p>
-          </div>
-          <div class="research-card">
-            <div class="research-icon">🧪</div>
-            <h3>Drug Development</h3>
-            <p>Discovering and validating novel therapeutic compounds.</p>
-          </div>
-        </div>
-        <div class="section-footer">
-          <a href="/research-cms" class="cta-link">Learn More About Our Research →</a>
-        </div>
-      </div>
-    </section>
+    <PhotoGallery 
+			photos={labPhotos}
+			title="Lab Life"
+			description="Our team working together to advance sickle cell disease research"
+		/>
+
   </main>
 
-  <style>
-    .hero {
-      position: relative;
-      height: 100vh;
-      min-height: 600px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-    }
+<style>
+/* Reset and Base Styles */
+:root {
+  --emory-primary: #002878;
+  --emory-secondary: #00A3E0;
+  --emory-accent: #f2a900;
+  --background-light: #f8fafc;
+  --text-dark: #2d3748;
+  --text-light: #718096;
+  --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+/* Hero Section */
+.hero {
+  background: linear-gradient(rgba(0, 40, 120, 0.85), rgba(0, 20, 60, 0.9)),
+              url('/images/lab-background.jpg') center/cover no-repeat;
+  height: 70vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: white;
+  padding: 0 1.25rem;
+  margin-top: 60px; /* Adjust for fixed navbar */
+}
+.hero-content h1 { font-size: 3.5rem; margin-bottom: 1rem; }
+.hero-content .subtitle { font-size: 1.25rem; opacity: 0.9; margin-bottom: 2rem; max-width: 600px; margin-left: auto; margin-right: auto;}
+.hero-buttons .button { margin: 0 0.5rem; padding: 0.8rem 1.5rem; border-radius: 6px; text-decoration: none; transition: all 0.3s ease; font-weight: 500; }
+.explore-research-btn { background-color: var(--emory-accent); color: var(--emory-primary); border: 1px solid var(--emory-accent); }
+.explore-research-btn:hover { background-color: #ffbe33; transform: translateY(-2px); }
+.view-publications-btn { background-color: transparent; border: 1px solid white; color: white; }
+.view-publications-btn:hover { background-color: rgba(255, 255, 255, 0.1); transform: translateY(-2px); }
 
-    .hero-background {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 1;
-    }
+/* Mission Section */
+.mission { padding: 4rem 1.25rem; background: white; text-align: center; }
+.container { max-width: 900px; margin: 0 auto; }
+.mission h2, .research-highlights h2, .latest-updates h2 { font-size: 2.25rem; color: var(--emory-primary); margin-bottom: 1rem; text-align: center; }
+.mission p { font-size: 1.1rem; line-height: 1.7; color: var(--text-dark); max-width: 800px; margin: 0 auto; }
 
-    .hero-image {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
+/* Research Highlights Section */
+.research-highlights { padding: 4rem 1.25rem; background: var(--background-light); }
+.highlight-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin-top: 3rem; }
+.highlight-card { background: white; padding: 2rem; border-radius: 12px; box-shadow: var(--card-shadow); text-align: center; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+.highlight-card:hover { transform: translateY(-5px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+.card-icon { font-size: 2.5rem; margin-bottom: 1rem; color: var(--emory-secondary); }
+.highlight-card h3 { font-size: 1.25rem; color: var(--emory-primary); margin-bottom: 0.75rem; }
+.highlight-card p { font-size: 1rem; color: var(--text-light); line-height: 1.6; }
 
-    .hero-pattern {
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(135deg, var(--emory-primary) 0%, #001133 100%);
-      background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-    }
+/* Latest Updates Section */
+.latest-updates { padding: 4rem 1.25rem; background: white; }
+.updates-content { max-width: 800px; margin: 3rem auto 0; }
+.latest-publication { border: 1px solid #e2e8f0; padding: 2rem; border-radius: 12px; background: #f8fafc; }
+.latest-publication h3 { font-size: 1.4rem; color: var(--emory-primary); margin-bottom: 0.75rem; }
+.latest-publication .authors { font-style: italic; color: var(--text-light); margin-bottom: 1rem; }
+.latest-publication .journal { font-weight: 500; color: var(--text-dark); }
+.publication-links { margin-top: 1.5rem; display: flex; gap: 1rem; }
+.link-button { background-color: var(--emory-secondary); color: white; padding: 0.6rem 1.2rem; border-radius: 6px; text-decoration: none; transition: background-color 0.3s ease; }
+.link-button:hover { background-color: var(--emory-primary); }
 
-    .hero-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 33, 105, 0.7);
-      z-index: 2;
-    }
-
-    .hero-content {
-      position: relative;
-      z-index: 3;
-      text-align: center;
-      color: white;
-      width: 100%;
-    }
-
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 1.25rem;
-    }
-
-    .hero h1 {
-      font-size: 4rem;
-      margin-bottom: 1rem;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-      animation: fadeInUp 1s ease-out;
-    }
-
-    .hero-subtitle {
-      font-size: 1.5rem;
-      margin-bottom: 2rem;
-      opacity: 0.9;
-      animation: fadeInUp 1s ease-out 0.2s both;
-    }
-
-    .hero-actions {
-      display: flex;
-      gap: 1rem;
-      justify-content: center;
-      animation: fadeInUp 1s ease-out 0.4s both;
-    }
-
-    .cta-button {
-      display: inline-block;
-      padding: 1rem 2rem;
-      border-radius: 8px;
-      text-decoration: none;
-      font-weight: 600;
-      transition: all 0.3s ease;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .cta-button.primary {
-      background: var(--emory-secondary);
-      color: white;
-    }
-
-    .cta-button.primary:hover {
-      background: #d4a574;
-      transform: translateY(-2px);
-    }
-
-    .cta-button.secondary {
-      background: transparent;
-      color: white;
-      border: 2px solid white;
-    }
-
-    .cta-button.secondary:hover {
-      background: white;
-      color: var(--emory-primary);
-    }
-
-    .info-section {
-      padding: 2rem 0;
-      background: #f0f9ff;
-      border-bottom: 1px solid #e0f2fe;
-    }
-
-    .info-message {
-      text-align: center;
-      color: #0c4a6e;
-    }
-
-    .content-section {
-      padding: 4rem 0;
-      background: white;
-    }
-
-    .content-grid {
-      display: grid;
-      grid-template-columns: 2fr 1fr;
-      gap: 3rem;
-      align-items: start;
-    }
-
-    .content-text {
-      font-size: 1.1rem;
-      line-height: 1.7;
-      color: #374151;
-    }
-
-    .content-text h2 {
-      color: var(--emory-primary);
-      margin: 2rem 0 1rem;
-    }
-
-    .content-text h3 {
-      color: var(--emory-secondary);
-      margin: 1.5rem 0 0.75rem;
-    }
-
-    .content-text p {
-      margin-bottom: 1.5rem;
-    }
-
-    .sidebar {
-      background: #f8fafc;
-      border-radius: 12px;
-      padding: 2rem;
-      height: fit-content;
-    }
-
-    .quick-links h3 {
-      color: var(--emory-primary);
-      margin-bottom: 1rem;
-      font-size: 1.25rem;
-    }
-
-    .quick-links ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-
-    .quick-links li {
-      margin-bottom: 0.75rem;
-    }
-
-    .quick-links a {
-      color: #4a5568;
-      text-decoration: none;
-      transition: color 0.3s ease;
-    }
-
-    .quick-links a:hover {
-      color: var(--emory-primary);
-    }
-
-    .featured-section {
-      padding: 4rem 0;
-      background: #f8fafc;
-    }
-
-    .featured-section h2 {
-      text-align: center;
-      color: var(--emory-primary);
-      margin-bottom: 3rem;
-      font-size: 2.5rem;
-    }
-
-    .featured-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-      gap: 2rem;
-      margin-bottom: 2rem;
-    }
-
-    .featured-publication {
-      background: white;
-      border-radius: 12px;
-      padding: 2rem;
-      box-shadow: 0 2px 12px rgba(0, 33, 105, 0.06);
-      transition: transform 0.3s ease;
-    }
-
-    .featured-publication:hover {
-      transform: translateY(-4px);
-    }
-
-    .featured-publication h3 {
-      color: var(--emory-primary);
-      margin-bottom: 1rem;
-      font-size: 1.25rem;
-      line-height: 1.4;
-    }
-
-    .authors {
-      color: #6b7280;
-      margin-bottom: 0.5rem;
-      font-weight: 500;
-    }
-
-    .journal {
-      color: var(--emory-secondary);
-      font-style: italic;
-      margin-bottom: 1rem;
-    }
-
-    .publication-links {
-      display: flex;
-      gap: 0.75rem;
-    }
-
-    .link-button {
-      padding: 0.5rem 1rem;
-      background: var(--emory-primary);
-      color: white;
-      text-decoration: none;
-      border-radius: 6px;
-      font-size: 0.85rem;
-      transition: background-color 0.3s ease;
-    }
-
-    .link-button:hover {
-      background: var(--emory-secondary);
-    }
-
-    .research-preview {
-      padding: 4rem 0;
-      background: white;
-    }
-
-    .research-preview h2 {
-      text-align: center;
-      color: var(--emory-primary);
-      margin-bottom: 3rem;
-      font-size: 2.5rem;
-    }
-
-    .research-areas {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 2rem;
-      margin-bottom: 2rem;
-    }
-
-    .research-card {
-      text-align: center;
-      padding: 2rem;
-      background: #f8fafc;
-      border-radius: 12px;
-      transition: transform 0.3s ease;
-    }
-
-    .research-card:hover {
-      transform: translateY(-4px);
-    }
-
-    .research-icon {
-      font-size: 3rem;
-      margin-bottom: 1rem;
-    }
-
-    .research-card h3 {
-      color: var(--emory-primary);
-      margin-bottom: 1rem;
-    }
-
-    .research-card p {
-      color: #6b7280;
-      line-height: 1.6;
-    }
-
-    .section-footer {
-      text-align: center;
-      margin-top: 2rem;
-    }
-
-    .cta-link {
-      color: var(--emory-primary);
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 1.1rem;
-      transition: color 0.3s ease;
-    }
-
-    .cta-link:hover {
-      color: var(--emory-secondary);
-    }
-
-    @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(30px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    @media (max-width: 768px) {
-      .hero h1 {
-        font-size: 2.5rem;
-      }
-
-      .hero-subtitle {
-        font-size: 1.25rem;
-      }
-
-      .hero-actions {
-        flex-direction: column;
-        align-items: center;
-      }
-
-      .content-grid {
-        grid-template-columns: 1fr;
-        gap: 2rem;
-      }
-
-      .featured-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .research-areas {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    details {
-      margin-top: 1rem;
-    }
-
-    summary {
-      cursor: pointer;
-      color: #0284c7;
-    }
-
-    details p {
-      margin-top: 0.5rem;
-      padding: 1rem;
-      background: rgba(59, 130, 246, 0.1);
-      border-radius: 8px;
-      font-family: monospace;
-      font-size: 0.9rem;
-    }
-  </style>
+.section-footer { text-align: center; margin-top: 2rem; }
+.cta-link { color: var(--emory-secondary); text-decoration: none; font-weight: 500; }
+.cta-link:hover { text-decoration: underline; }
+</style>
+</main>
 </Layout> 

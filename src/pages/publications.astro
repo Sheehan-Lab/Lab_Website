@@ -1,32 +1,33 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { getPublications, getFeaturedPublications } from '../utils/sanity';
+import type { Publication } from '../utils/sanity';
 
-// Fetch publications from Sanity CMS
-let publications = [];
-let featuredPublications = [];
-let error = null;
+let allPublications: Publication[] = [];
+let featuredPublications: Publication[] = [];
+let error: string | null = null;
 
 try {
-  [publications, featuredPublications] = await Promise.all([
-    getPublications(),
-    getFeaturedPublications()
-  ]);
+  allPublications = await getPublications();
+  featuredPublications = await getFeaturedPublications();
 } catch (e) {
   error = e.message;
   console.error('Error fetching publications:', e);
 }
 
-// Group publications by year
-const publicationsByYear = publications.reduce((acc, pub) => {
-  if (!acc[pub.year]) {
-    acc[pub.year] = [];
-  }
-  acc[pub.year].push(pub);
-  return acc;
-}, {} as Record<number, typeof publications>);
+const groupPublicationsByYear = (pubs: Publication[]) => {
+  return pubs.reduce((acc, pub) => {
+    const year = pub.year;
+    if (!acc[year]) {
+      acc[year] = [];
+    }
+    acc[year].push(pub);
+    return acc;
+  }, {} as Record<number, Publication[]>);
+};
 
-const years = Object.keys(publicationsByYear).map(Number).sort((a, b) => b - a);
+const groupedByYear = groupPublicationsByYear(allPublications);
+const sortedYears = Object.keys(groupedByYear).map(Number).sort((a, b) => b - a);
 
 // Helper function to format authors
 function formatAuthors(authors: string[]): string {
@@ -59,118 +60,44 @@ function formatCitation(pub: any): string {
     <section class="hero">
       <div class="hero-content">
         <h1>Publications</h1>
-        <p>Our research contributions to the scientific community</p>
+        <p>Our research contributions to the scientific community.</p>
       </div>
     </section>
 
-    <section class="content-section">
-      <div class="container">
-        {error ? (
-          <div class="error-message">
-            <h2>🔧 Unable to load publications</h2>
-            <p>Please ensure the Sanity CMS is properly configured.</p>
-            <details>
-              <summary>Technical details</summary>
-              <p>{error}</p>
-            </details>
-          </div>
-        ) : publications.length === 0 ? (
-          <div class="empty-message">
-            <h2>📝 No publications found</h2>
-            <p>Add publications through the Sanity Studio to see them here.</p>
-          </div>
-        ) : (
-          <>
-            {featuredPublications.length > 0 && (
-              <section class="featured-section">
-                <h2>Featured Publications</h2>
-                <div class="featured-publications">
-                  {featuredPublications.map((pub) => (
-                    <article class="publication featured">
-                      <div class="publication-content">
-                        <h3 class="publication-title">{pub.title}</h3>
-                        <p class="publication-authors">{formatAuthors(pub.authors)}</p>
-                        <div class="publication-details">
-                          <span class="journal">{pub.journal}</span>
-                          <span class="year">({pub.year})</span>
-                          {pub.volume && <span class="volume">Vol. {pub.volume}</span>}
-                          {pub.issue && <span class="issue">Issue {pub.issue}</span>}
-                        </div>
-                        {pub.abstract && (
-                          <p class="abstract">{pub.abstract}</p>
-                        )}
-                        <div class="publication-links">
-                          {pub.doi && (
-                            <a href={`https://doi.org/${pub.doi}`} target="_blank" rel="noopener noreferrer" class="link-button">
-                              DOI
-                            </a>
-                          )}
-                          {pub.pmid && (
-                            <a href={`https://pubmed.ncbi.nlm.nih.gov/${pub.pmid}/`} target="_blank" rel="noopener noreferrer" class="link-button">
-                              PubMed
-                            </a>
-                          )}
-                          {pub.url && (
-                            <a href={pub.url} target="_blank" rel="noopener noreferrer" class="link-button">
-                              Full Text
-                            </a>
-                          )}
-                        </div>
-                      </div>
-                    </article>
-                  ))}
-                </div>
-              </section>
-            )}
+    {error &&
+      <section class="content-section">
+        <div class="container">
+            <p class="error">Error loading publications. Please try again later.</p>
+        </div>
+      </section>
+    }
 
-            <section class="all-publications-section">
-              <h2>All Publications</h2>
-              <div class="publication-stats">
-                <span class="stat">
-                  <strong>{publications.length}</strong> publications
-                </span>
-                <span class="stat">
-                  <strong>{years.length}</strong> years of research
-                </span>
+    {!error && featuredPublications.length > 0 &&
+      <section class="content-section featured-section">
+        <div class="container">
+          <h2>Featured Publications</h2>
+          <div class="publication-list">
+            {featuredPublications.map(pub => <PublicationItem publication={pub} />)}
+          </div>
+        </div>
+      </section>
+    }
+
+    {!error && allPublications.length > 0 &&
+      <section class="content-section">
+        <div class="container">
+          <h2>All Publications</h2>
+          {sortedYears.map(year => (
+            <div class="year-group">
+              <h3>{year}</h3>
+              <div class="publication-list">
+                {groupedByYear[year].map(pub => <PublicationItem publication={pub} />)}
               </div>
-
-              {years.map((year) => (
-                <div class="year-section">
-                  <h3 class="year-heading">{year}</h3>
-                  <div class="publications-list">
-                    {publicationsByYear[year].map((pub) => (
-                      <article class="publication">
-                        <div class="publication-content">
-                          <h4 class="publication-title">{pub.title}</h4>
-                          <div class="citation" set:html={formatCitation(pub)} />
-                          <div class="publication-links">
-                            {pub.doi && (
-                              <a href={`https://doi.org/${pub.doi}`} target="_blank" rel="noopener noreferrer" class="link-button small">
-                                DOI
-                              </a>
-                            )}
-                            {pub.pmid && (
-                              <a href={`https://pubmed.ncbi.nlm.nih.gov/${pub.pmid}/`} target="_blank" rel="noopener noreferrer" class="link-button small">
-                                PubMed
-                              </a>
-                            )}
-                            {pub.url && (
-                              <a href={pub.url} target="_blank" rel="noopener noreferrer" class="link-button small">
-                                Full Text
-                              </a>
-                            )}
-                          </div>
-                        </div>
-                      </article>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </section>
-          </>
-        )}
-      </div>
-    </section>
+            </div>
+          ))}
+        </div>
+      </section>
+    }
   </main>
 
   <style>
@@ -199,22 +126,17 @@ function formatCitation(pub: any): string {
       text-align: center;
       max-width: 800px;
       margin: 0 auto;
-      animation: fadeIn 1s ease-out;
     }
 
     .hero h1 {
       font-size: 3.5rem;
       color: white;
       margin-bottom: 1.5rem;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
     }
 
     .hero p {
       color: rgba(255,255,255,0.9);
       font-size: 1.25rem;
-      max-width: 600px;
-      margin: 0 auto;
-      line-height: 1.6;
     }
 
     .content-section {
@@ -452,4 +374,74 @@ function formatCitation(pub: any): string {
       font-size: 0.9rem;
     }
   </style>
-</Layout> 
+</Layout>
+
+// components/PublicationItem.astro
+---
+import type { Publication } from '../utils/sanity';
+const { publication } = Astro.props as { publication: Publication };
+
+const formatAuthors = (authors: string[]) => {
+  if (authors.length > 5) {
+    return `${authors.slice(0, 3).join(', ')}, ..., ${authors[authors.length - 1]}`;
+  }
+  return authors.join(', ');
+};
+---
+<div class="publication-item">
+  <h4>{publication.title}</h4>
+  <p class="authors">{formatAuthors(publication.authors)}</p>
+  <p class="citation">
+    <em>{publication.journal}</em>, {publication.year}
+    {publication.volume && `, ${publication.volume}`}
+    {publication.issue && `(${publication.issue})`}
+    {publication.pages && `: ${publication.pages}`}
+  </p>
+  <div class="links">
+    {publication.doi && <a href={`https://doi.org/${publication.doi}`} target="_blank" class="link-button doi">DOI</a>}
+    {publication.pmid && <a href={`https://pubmed.ncbi.nlm.nih.gov/${publication.pmid}/`} target="_blank" class="link-button pmid">PubMed</a>}
+    {publication.url && <a href={publication.url} target="_blank" class="link-button external">Link</a>}
+  </div>
+</div>
+
+<style>
+.publication-item {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,33,105,0.08);
+  border-left: 4px solid var(--emory-secondary);
+}
+h4 {
+  font-size: 1.1rem;
+  color: var(--emory-primary);
+  margin-bottom: 0.75rem;
+}
+.authors {
+  font-size: 0.9rem;
+  color: #4a5568;
+  margin-bottom: 0.5rem;
+}
+.citation {
+  font-size: 0.9rem;
+  color: #718096;
+}
+.links {
+  margin-top: 1rem;
+  display: flex;
+  gap: 0.5rem;
+}
+.link-button {
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  text-decoration: none;
+  font-weight: 500;
+  color: white;
+  transition: opacity 0.3s;
+}
+.link-button:hover { opacity: 0.85; }
+.doi { background-color: #f0ad4e; }
+.pmid { background-color: #5bc0de; }
+.external { background-color: #5cb85c; }
+</style> 

@@ -1,3 +1,4 @@
+---
 import Layout from '../layouts/Layout.astro';
 import { getTeamMembers, urlFor } from '../utils/sanity';
 
@@ -25,15 +26,20 @@ const groupedMembers = groupOrder.reduce((acc, group) => {
   acc[group] = teamMembers.filter(member => member.group === group);
   return acc;
 }, {} as Record<typeof groupOrder[number], typeof teamMembers>);
+---
 
 <Layout title="Our Team | Sheehan Lab">
   <main>
     <section class="page-header">
+      <div class="header-bg"></div>
+      <div class="header-overlay"></div>
       <div class="container">
         <h1>Our Team</h1>
         <p>Meet our passionate team of researchers</p>
       </div>
     </section>
+
+    <div id="modal-overlay" class="modal-overlay"></div>
 
     {error ? (
       <section class="error-section">
@@ -53,7 +59,7 @@ const groupedMembers = groupOrder.reduce((acc, group) => {
         <div class="container">
           <div class="empty-message">
             <h2>📝 No team members found</h2>
-            <p>Add team members through the Sanity Studio to see them here.</p>
+            <p>Add team members through the Sanity Studio and ensure they are "Active".</p>
           </div>
         </div>
       </section>
@@ -66,34 +72,32 @@ const groupedMembers = groupOrder.reduce((acc, group) => {
           <section class={`team-section ${group}`}>
             <div class="container">
               <h2 class="section-title">{groupTitles[group]}</h2>
-              <div class={`team-grid ${group === 'pi' ? 'featured' : ''}`}>
-                {members.map((member) => (
-                  <div class="team-member">
-                    <div class="member-photo-container">
-                      {member.image ? (
-                        <img 
-                          src={urlFor(member.image).width(300).height(300).quality(85).url()} 
-                          alt={member.name}
-                          class="member-photo"
-                          loading="lazy"
-                        />
-                      ) : (
-                        <div class="photo-placeholder">
-                          <span class="placeholder-icon">👤</span>
-                        </div>
-                      )}
-                    </div>
-                    <div class="member-info">
-                      <h3 class="member-name">{member.name}</h3>
-                      <p class="member-role">{member.role}</p>
-                      <div class="member-bio">
-                        {member.bio.split('\n\n').map(paragraph => (
-                          <p>{paragraph}</p>
-                        ))}
+              <div class="team-grid">
+                {members.map((member, idx) => (
+                  <div class="team-member" data-member-card data-member-idx={group + '-' + idx}>
+                    <div class="member-card">
+                      <div class="member-image">
+                        {member.image ? (
+                           <img src={urlFor(member.image).width(400).height(400).quality(85).url()} alt={`${member.name} headshot`} />
+                        ) : (
+                           <img src="/images/headshots/placeholder-headshot.png" alt="Placeholder headshot" />
+                        )}
                       </div>
-                      <a href={`mailto:${member.email}`} class="contact-email">
-                        {member.email}
-                      </a>
+                      <div class="member-info">
+                        <h3>{member.name}</h3>
+                        <p class="role">{member.role}</p>
+                        <button class="expand-button" aria-label="Show more details">
+                            <span class="icon">↓</span>
+                        </button>
+                      </div>
+                      <div class="member-details">
+                        <div class="bio-section">
+                          {member.bio && member.bio.split('\n\n').map(paragraph => <p>{paragraph}</p>)}
+                        </div>
+                        <a href={`mailto:${member.email}`} class="contact-email">
+                          Contact
+                        </a>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -103,266 +107,365 @@ const groupedMembers = groupOrder.reduce((acc, group) => {
         );
       })
     )}
+
   </main>
+</Layout>
 
-  <style>
-    .page-header {
-      background: var(--emory-primary);
-      color: white;
-      padding: 4rem 0 2.5rem;
-      margin-top: 60px;
-      text-align: center;
-      position: relative;
-    }
+<style>
+:root {
+  --emory-primary: #002878;
+  --emory-secondary: #00A3E0;
+  --background-light: #f8fafc;
+  --text-dark: #2d3748;
+  --text-light: #718096;
+  --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --card-hover-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
 
-    .page-header::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-    }
+.page-header {
+  position: relative;
+  background: none;
+  color: white;
+  padding: 16rem 0 12rem 0;
+  margin-top: 60px;
+  text-align: center;
+  overflow: hidden;
+}
+.page-header .header-bg {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: url('/images/lab-team-photo-2024.jpg') center/cover no-repeat;
+  z-index: 1;
+}
+.page-header .header-overlay {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: linear-gradient(rgba(0,40,120,0.7), rgba(0,20,60,0.7));
+  z-index: 2;
+}
+.page-header .container {
+  position: relative;
+  z-index: 3;
+}
+.page-header h1 {
+  font-size: 2.8rem;
+  margin-bottom: 0.5rem;
+  color: #fff;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.25);
+}
+.page-header p {
+  font-size: 1.2rem;
+  opacity: 0.95;
+  color: #f8fafc;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.18);
+}
 
-    .page-header h1 {
-      font-size: 2.5rem;
-      margin-bottom: 1rem;
-      color: white;
-      position: relative;
-      z-index: 1;
-    }
+/* Remove .lab-photo-section and related styles */
+.lab-photo-section, .photo-container, .photo-caption { display: none !important; }
 
-    .page-header p {
-      color: rgba(255, 255, 255, 0.9);
-      position: relative;
-      z-index: 1;
-      font-size: 1.1rem;
-    }
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.25rem;
+}
 
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 1.25rem;
-    }
+.team-section {
+  padding: 4rem 0;
+}
 
-    .error-section, .empty-section {
-      padding: 4rem 0;
-      background: #f8fafc;
-    }
+.team-section.pi {
+  background: var(--background-light);
+}
 
-    .error-message, .empty-message {
-      background: white;
-      border-radius: 12px;
-      padding: 3rem;
-      text-align: center;
-      box-shadow: 0 2px 12px rgba(0, 33, 105, 0.06);
-    }
+.section-title {
+  font-size: 2rem;
+  color: var(--emory-primary);
+  text-align: center;
+  margin-bottom: 3rem;
+  position: relative;
+}
 
-    .error-message h2, .empty-message h2 {
-      color: var(--emory-primary);
-      margin-bottom: 1rem;
-    }
+.section-title::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background: var(--emory-secondary);
+}
 
-    .team-section {
-      padding: 4rem 0;
-      background: white;
-    }
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2.5rem;
+  width: 100%;
+  margin: 0 auto;
+}
 
-    .team-section:nth-child(even) {
-      background: #f8fafc;
-    }
+.team-member {
+  position: relative;
+}
 
-    .section-title {
-      font-size: 2rem;
-      color: var(--emory-primary);
-      text-align: center;
-      margin-bottom: 3rem;
-      position: relative;
-    }
+.member-card {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--card-shadow);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 0 1.5rem;
+  padding: 1.5rem;
+  text-align: left;
+  align-items: start;
+}
 
-    .section-title::after {
-      content: '';
-      position: absolute;
-      bottom: -10px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 60px;
-      height: 3px;
-      background: var(--emory-secondary);
-      border-radius: 2px;
-    }
+.team-member:hover .member-card {
+  transform: translateY(-5px);
+  box-shadow: var(--card-hover-shadow);
+}
 
-    .team-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 2rem;
-    }
+.member-image {
+  width: 100%;
+  height: 120px;
+  min-width: 100px;
+  max-width: 120px;
+  position: relative;
+  grid-row: 1 / span 2;
+  align-self: start;
+  padding-top: 0;
+}
 
-    .team-grid.featured {
-      grid-template-columns: 1fr;
-      max-width: 800px;
-      margin: 0 auto;
-    }
+.member-image img {
+  position: static;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+}
 
-    .team-member {
-      background: white;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 2px 12px rgba(0, 33, 105, 0.06);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
+.member-info {
+  grid-column: 2;
+  text-align: left;
+  padding: 0;
+  align-self: start;
+  position: relative;
+}
 
-    .team-member:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 8px 25px rgba(0, 33, 105, 0.12);
-    }
+.member-info h3 {
+  font-size: 1.25rem;
+  color: var(--text-dark);
+  margin: 0;
+}
 
-    .featured .team-member {
-      display: grid;
-      grid-template-columns: 250px 1fr;
-      gap: 2rem;
-      align-items: start;
-    }
+.member-info .role {
+  color: var(--text-light);
+  font-size: 1rem;
+  margin-top: 0.25rem;
+}
 
-    .member-photo-container {
-      position: relative;
-      aspect-ratio: 1;
-      overflow: hidden;
-    }
+.member-details {
+  grid-column: 2;
+  padding: 0;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--text-dark);
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s ease-in-out, padding 0.5s ease-in-out;
+}
 
-    .featured .member-photo-container {
-      aspect-ratio: 1;
-      border-radius: 12px;
-      margin: 2rem;
-    }
+.team-member.expanded .member-details {
+  max-height: 1000px; /* Large enough for any bio */
+  padding: 1.5rem 0 0 0;
+}
 
-    .member-photo {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.3s ease;
-    }
+.bio-section {
+  margin-bottom: 1rem;
+}
 
-    .team-member:hover .member-photo {
-      transform: scale(1.05);
-    }
+.contact-email {
+  display: inline-block;
+  background-color: var(--emory-secondary);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
 
-    .photo-placeholder {
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+.contact-email:hover {
+  background-color: var(--emory-primary);
+}
 
-    .placeholder-icon {
-      font-size: 4rem;
-      color: #a0aec0;
-    }
+.expand-button {
+  background: none;
+  border: 1px solid #ccc;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease;
+  margin: 1.5rem 0 0 0;
+}
 
-    .member-info {
-      padding: 1.5rem;
-    }
+.team-member.expanded .expand-button {
+  transform: rotate(180deg);
+}
 
-    .featured .member-info {
-      padding: 2rem 2rem 2rem 0;
-    }
+/* Error and empty states */
+.error-section, .empty-section {
+  padding: 4rem 0;
+}
+.error-message, .empty-message {
+  background: #fff5f5;
+  color: #c53030;
+  border: 1px solid #fed7d7;
+  padding: 2rem;
+  border-radius: 8px;
+  text-align: center;
+}
+.empty-message {
+    background: #f0f9ff;
+    color: #2563eb;
+    border-color: #bfdbfe;
+}
 
-    .member-name {
-      font-size: 1.5rem;
-      color: var(--emory-primary);
-      margin-bottom: 0.5rem;
-      font-weight: 600;
-    }
+@media (max-width: 900px) {
+  .team-grid {
+    grid-template-columns: 1fr;
+  }
+  .member-card {
+    grid-template-columns: 1fr;
+    padding: 1rem;
+  }
+  .member-image {
+    height: 180px;
+    max-width: 100%;
+    margin-bottom: 1rem;
+  }
+}
 
-    .member-role {
-      color: var(--emory-secondary);
-      font-weight: 500;
-      margin-bottom: 1rem;
-      font-size: 1.1rem;
-    }
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  background: rgba(0,0,0,0.55);
+  z-index: 1000;
+  transition: opacity 0.3s;
+}
+.team-member.focused {
+  z-index: 1100;
+}
+.team-member.focused .member-card {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(1.08);
+  width: 95vw;
+  max-width: 600px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+  background: white;
+  border-radius: 16px;
+  padding: 2.5rem 2rem 2rem 2rem;
+  transition: all 0.7s cubic-bezier(.4,2,.3,1);
+  z-index: 1200;
+  display: block;
+}
+.team-member.focused .member-image {
+  width: 160px;
+  height: 160px;
+  margin: 0 auto 1.5rem auto;
+  display: block;
+  float: none;
+}
+.team-member.focused .member-info {
+  text-align: center;
+  padding: 0;
+}
+.team-member.focused .member-details {
+  max-height: 1000px;
+  padding: 1.5rem 0 0 0;
+}
+.team-member.focused .expand-button {
+  display: none;
+}
+.close-modal {
+  position: absolute;
+  top: 1.2rem;
+  right: 1.2rem;
+  background: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  font-size: 1.5rem;
+  color: #333;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  z-index: 1300;
+  transition: background 0.2s;
+}
+.close-modal:hover {
+  background: #f0f0f0;
+}
+</style>
 
-    .member-bio {
-      color: #4a5568;
-      line-height: 1.6;
-      margin-bottom: 1.5rem;
-    }
-
-    .member-bio p {
-      margin-bottom: 1rem;
-    }
-
-    .member-bio p:last-child {
-      margin-bottom: 0;
-    }
-
-    .contact-email {
-      color: var(--emory-primary);
-      text-decoration: none;
-      font-weight: 500;
-      transition: color 0.3s ease;
-    }
-
-    .contact-email:hover {
-      color: var(--emory-secondary);
-      text-decoration: underline;
-    }
-
-    @media (max-width: 768px) {
-      .page-header {
-        padding: 3rem 0 2rem;
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const overlay = document.getElementById('modal-overlay');
+    let focused = null;
+    document.querySelectorAll('[data-member-card]').forEach(card => {
+      const button = card.querySelector('.expand-button');
+      if (button) {
+        button.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (focused) {
+            focused.classList.remove('focused');
+            overlay.style.display = 'none';
+            const oldClose = document.querySelector('.close-modal');
+            if (oldClose) oldClose.remove();
+          }
+          card.classList.add('focused');
+          overlay.style.display = 'block';
+          // Add close button
+          const closeBtn = document.createElement('button');
+          closeBtn.className = 'close-modal';
+          closeBtn.innerHTML = '&times;';
+          closeBtn.onclick = (ev) => {
+            card.classList.remove('focused');
+            overlay.style.display = 'none';
+            closeBtn.remove();
+            focused = null;
+          };
+          card.querySelector('.member-card').appendChild(closeBtn);
+          focused = card;
+        });
       }
-
-      .page-header h1 {
-        font-size: 2rem;
+    });
+    overlay.addEventListener('click', () => {
+      if (focused) {
+        focused.classList.remove('focused');
+        overlay.style.display = 'none';
+        const oldClose = document.querySelector('.close-modal');
+        if (oldClose) oldClose.remove();
+        focused = null;
       }
-
-      .team-section {
-        padding: 3rem 0;
+    });
+    // ESC key closes modal
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && focused) {
+        focused.classList.remove('focused');
+        overlay.style.display = 'none';
+        const oldClose = document.querySelector('.close-modal');
+        if (oldClose) oldClose.remove();
+        focused = null;
       }
-
-      .team-grid {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
-      }
-
-      .team-grid.featured {
-        grid-template-columns: 1fr;
-      }
-
-      .featured .team-member {
-        grid-template-columns: 1fr;
-        text-align: center;
-      }
-
-      .featured .member-photo-container {
-        margin: 2rem auto;
-        max-width: 200px;
-      }
-
-      .featured .member-info {
-        padding: 0 2rem 2rem;
-      }
-    }
-
-    details {
-      margin-top: 1rem;
-    }
-
-    summary {
-      cursor: pointer;
-      color: var(--emory-secondary);
-    }
-
-    details p {
-      margin-top: 0.5rem;
-      padding: 1rem;
-      background: #f7fafc;
-      border-radius: 8px;
-      font-family: monospace;
-      font-size: 0.9rem;
-    }
-  </style>
-</Layout> 
+    });
+  });
+</script> 

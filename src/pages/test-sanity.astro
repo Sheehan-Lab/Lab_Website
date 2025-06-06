@@ -1,0 +1,65 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { sanityClient } from '../utils/sanity';
+
+let data = null;
+let error = null;
+
+try {
+  // Test basic connection
+  const teamMembers = await sanityClient.fetch('*[_type == "teamMember"]');
+  const researchAreas = await sanityClient.fetch('*[_type == "researchArea"]');
+  const publishedTeam = await sanityClient.fetch('*[_type == "teamMember" && isActive == true]');
+  
+  data = {
+    totalTeamMembers: teamMembers.length,
+    totalResearchAreas: researchAreas.length,
+    publishedTeamMembers: publishedTeam.length,
+    firstTeamMember: teamMembers[0] || null,
+    connectionTest: 'Success!'
+  };
+} catch (e) {
+  error = e.message;
+  console.error('Sanity connection test failed:', e);
+}
+---
+
+<Layout title="Sanity Connection Test">
+  <main style="padding: 2rem;">
+    <h1>🔍 Sanity CMS Connection Test</h1>
+    
+    {error ? (
+      <div style="background: #fee; padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+        <h2>❌ Connection Failed</h2>
+        <p>{error}</p>
+      </div>
+    ) : (
+      <div style="background: #efe; padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+        <h2>✅ Connection Successful!</h2>
+        <ul>
+          <li><strong>Total Team Members:</strong> {data.totalTeamMembers}</li>
+          <li><strong>Published Team Members:</strong> {data.publishedTeamMembers}</li>
+          <li><strong>Total Research Areas:</strong> {data.totalResearchAreas}</li>
+        </ul>
+        
+        {data.firstTeamMember && (
+          <div style="margin-top: 1rem; padding: 1rem; background: white; border-radius: 8px;">
+            <h3>📋 First Team Member:</h3>
+            <p><strong>Name:</strong> {data.firstTeamMember.name}</p>
+            <p><strong>Role:</strong> {data.firstTeamMember.role}</p>
+            <p><strong>Active:</strong> {data.firstTeamMember.isActive ? 'Yes' : 'No'}</p>
+          </div>
+        )}
+      </div>
+    )}
+    
+    <div style="margin-top: 2rem;">
+      <h3>🔗 Quick Links:</h3>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/team">Team Page</a></li>
+        <li><a href="https://sheehan.sanity.studio" target="_blank">Sanity Studio</a></li>
+      </ul>
+    </div>
+  </main>
+</Layout> 
