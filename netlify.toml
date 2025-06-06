@@ -1,0 +1,37 @@
+[build]
+  publish = "dist"
+  command = "npm run build"
+
+[build.environment]
+  NODE_VERSION = "18"
+  NPM_VERSION = "8"
+
+# Environment variables (you can also set these in Netlify dashboard)
+[context.production.environment]
+  PUBLIC_SANITY_PROJECT_ID = "fyi47z1v"
+  PUBLIC_SANITY_DATASET = "production"
+
+[context.deploy-preview.environment]
+  PUBLIC_SANITY_PROJECT_ID = "fyi47z1v"
+  PUBLIC_SANITY_DATASET = "production"
+
+# Redirect rules (if needed)
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+  conditions = {Role = ["admin"]}
+
+# Headers for better performance
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable" 
