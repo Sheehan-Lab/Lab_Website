@@ -1,57 +1,18 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { getPublications, getFeaturedPublications } from '../utils/sanity';
-import type { Publication } from '../utils/sanity';
+import PublicationList from '../components/PublicationList.astro';
+import { getSheehanPublications } from '../utils/pubmed';
+import type { PubMedArticle } from '../utils/pubmed';
 
-let allPublications: Publication[] = [];
-let featuredPublications: Publication[] = [];
-let error: string | null = null;
+let publications: PubMedArticle[] = [];
+let error: Error | null = null;
 
 try {
-  allPublications = await getPublications();
-  featuredPublications = await getFeaturedPublications();
+  publications = await getSheehanPublications();
+  console.log(`Fetched ${publications.length} publications`);
 } catch (e) {
-  error = e.message;
   console.error('Error fetching publications:', e);
-}
-
-const groupPublicationsByYear = (pubs: Publication[]) => {
-  return pubs.reduce((acc, pub) => {
-    const year = pub.year;
-    if (!acc[year]) {
-      acc[year] = [];
-    }
-    acc[year].push(pub);
-    return acc;
-  }, {} as Record<number, Publication[]>);
-};
-
-const groupedByYear = groupPublicationsByYear(allPublications);
-const sortedYears = Object.keys(groupedByYear).map(Number).sort((a, b) => b - a);
-
-// Helper function to format authors
-function formatAuthors(authors: string[]): string {
-  if (authors.length === 1) return authors[0];
-  if (authors.length === 2) return `${authors[0]} and ${authors[1]}`;
-  return `${authors.slice(0, -1).join(', ')}, and ${authors[authors.length - 1]}`;
-}
-
-// Helper function to build citation
-function formatCitation(pub: any): string {
-  const authors = formatAuthors(pub.authors);
-  let citation = `${authors}. "${pub.title}." <em>${pub.journal}</em>`;
-  
-  if (pub.volume || pub.issue || pub.pages) {
-    citation += ` ${pub.year}`;
-    if (pub.volume) citation += `;${pub.volume}`;
-    if (pub.issue) citation += `(${pub.issue})`;
-    if (pub.pages) citation += `:${pub.pages}`;
-  } else {
-    citation += ` (${pub.year})`;
-  }
-  
-  citation += '.';
-  return citation;
+  error = e instanceof Error ? e : new Error('Unknown error');
 }
 ---
 
@@ -60,393 +21,116 @@ function formatCitation(pub: any): string {
     <section class="hero">
       <div class="hero-content">
         <h1>Publications</h1>
-        <p>Our research contributions to the scientific community.</p>
+        <p>Our research contributions to the scientific community</p>
       </div>
     </section>
 
-    {error &&
-      <section class="content-section">
-        <div class="container">
-            <p class="error">Error loading publications. Please try again later.</p>
-        </div>
-      </section>
-    }
-
-    {!error && featuredPublications.length > 0 &&
-      <section class="content-section featured-section">
-        <div class="container">
-          <h2>Featured Publications</h2>
-          <div class="publication-list">
-            {featuredPublications.map(pub => <PublicationItem publication={pub} />)}
-          </div>
-        </div>
-      </section>
-    }
-
-    {!error && allPublications.length > 0 &&
-      <section class="content-section">
-        <div class="container">
-          <h2>All Publications</h2>
-          {sortedYears.map(year => (
-            <div class="year-group">
-              <h3>{year}</h3>
-              <div class="publication-list">
-                {groupedByYear[year].map(pub => <PublicationItem publication={pub} />)}
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-    }
+    <section class="content-section">
+      <div class="container">
+        {error && <p class="error">Error loading publications. Please try again later.</p>}
+        {!error && publications.length === 0 && <p class="loading">Loading publications...</p>}
+        {publications.length > 0 && <PublicationList publications={publications} />}
+      </div>
+    </section>
   </main>
+</Layout>
 
-  <style>
-    :root {
-      --emory-primary: #002878;
-      --emory-secondary: #00A3E0;
+<style>
+  .hero {
+    background: linear-gradient(135deg, var(--emory-primary) 0%, #001133 100%);
+    position: relative;
+    padding: 8rem 2rem 4rem;
+    margin-top: 60px;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    opacity: 0.1;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+    animation: fadeIn 1s ease-out;
+  }
+
+  .hero h1 {
+    font-size: 3.5rem;
+    color: white;
+    margin-bottom: 1.5rem;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  }
+
+  .hero p {
+    color: rgba(255,255,255,0.9);
+    font-size: 1.25rem;
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  .content-section {
+    padding: 4rem 0;
+    background: #f8fafc;
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.25rem;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
     }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 
+  @media (max-width: 768px) {
     .hero {
-      background: linear-gradient(135deg, var(--emory-primary) 0%, #001133 100%);
-      position: relative;
-      padding: 8rem 2rem 4rem;
-      margin-top: 60px;
-      overflow: hidden;
-    }
-
-    .hero::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-      opacity: 0.1;
-    }
-
-    .hero-content {
-      position: relative;
-      z-index: 1;
-      text-align: center;
-      max-width: 800px;
-      margin: 0 auto;
+      padding: 6rem 1rem 3rem;
     }
 
     .hero h1 {
-      font-size: 3.5rem;
-      color: white;
-      margin-bottom: 1.5rem;
+      font-size: 2.5rem;
     }
 
     .hero p {
-      color: rgba(255,255,255,0.9);
-      font-size: 1.25rem;
+      font-size: 1.1rem;
     }
 
     .content-section {
-      padding: 4rem 0;
-      background: #f8fafc;
+      padding: 2rem 0;
     }
-
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 1.25rem;
-    }
-
-    .error-message, .empty-message {
-      background: white;
-      border-radius: 12px;
-      padding: 3rem;
-      text-align: center;
-      box-shadow: 0 2px 12px rgba(0, 33, 105, 0.06);
-      margin-bottom: 2rem;
-    }
-
-    .featured-section {
-      margin-bottom: 4rem;
-    }
-
-    .featured-section h2 {
-      font-size: 2rem;
-      color: var(--emory-primary);
-      margin-bottom: 2rem;
-      text-align: center;
-    }
-
-    .featured-publications {
-      display: grid;
-      gap: 2rem;
-    }
-
-    .publication {
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 2px 12px rgba(0, 33, 105, 0.06);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .publication:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(0, 33, 105, 0.12);
-    }
-
-    .publication.featured {
-      border-left: 4px solid var(--emory-secondary);
-    }
-
-    .publication-content {
-      padding: 2rem;
-    }
-
-    .publication-title {
-      font-size: 1.25rem;
-      color: var(--emory-primary);
-      margin-bottom: 0.75rem;
-      line-height: 1.4;
-    }
-
-    .featured .publication-title {
-      font-size: 1.5rem;
-      margin-bottom: 1rem;
-    }
-
-    .publication-authors {
-      color: #4a5568;
-      margin-bottom: 0.5rem;
-      font-weight: 500;
-    }
-
-    .publication-details {
-      color: #6b7280;
-      margin-bottom: 1rem;
-      font-size: 0.9rem;
-    }
-
-    .publication-details span {
-      margin-right: 1rem;
-    }
-
-    .journal {
-      font-style: italic;
-    }
-
-    .abstract {
-      color: #4a5568;
-      line-height: 1.6;
-      margin-bottom: 1.5rem;
-      border-left: 3px solid #e5e7eb;
-      padding-left: 1rem;
-      font-size: 0.95rem;
-    }
-
-    .citation {
-      color: #374151;
-      line-height: 1.5;
-      margin-bottom: 1rem;
-      font-size: 0.95rem;
-    }
-
-    .publication-links {
-      display: flex;
-      gap: 0.75rem;
-      flex-wrap: wrap;
-    }
-
-    .link-button {
-      display: inline-block;
-      padding: 0.5rem 1rem;
-      background: var(--emory-primary);
-      color: white;
-      text-decoration: none;
-      border-radius: 6px;
-      font-size: 0.85rem;
-      font-weight: 500;
-      transition: background-color 0.3s ease;
-    }
-
-    .link-button:hover {
-      background: var(--emory-secondary);
-    }
-
-    .link-button.small {
-      padding: 0.375rem 0.75rem;
-      font-size: 0.8rem;
-    }
-
-    .all-publications-section h2 {
-      font-size: 2rem;
-      color: var(--emory-primary);
-      margin-bottom: 1rem;
-      text-align: center;
-    }
-
-    .publication-stats {
-      text-align: center;
-      margin-bottom: 3rem;
-      padding: 1.5rem;
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 2px 12px rgba(0, 33, 105, 0.06);
-    }
-
-    .stat {
-      display: inline-block;
-      margin: 0 2rem;
-      color: #4a5568;
-    }
-
-    .stat strong {
-      color: var(--emory-primary);
-      font-size: 1.25rem;
-    }
-
-    .year-section {
-      margin-bottom: 3rem;
-    }
-
-    .year-heading {
-      font-size: 1.5rem;
-      color: var(--emory-secondary);
-      margin-bottom: 1.5rem;
-      padding-bottom: 0.5rem;
-      border-bottom: 2px solid #e5e7eb;
-    }
-
-    .publications-list {
-      display: grid;
-      gap: 1.5rem;
-    }
-
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    @media (max-width: 768px) {
-      .hero {
-        padding: 6rem 1rem 3rem;
-      }
-
-      .hero h1 {
-        font-size: 2.5rem;
-      }
-
-      .hero p {
-        font-size: 1.1rem;
-      }
-
-      .content-section {
-        padding: 2rem 0;
-      }
-
-      .publication-content {
-        padding: 1.5rem;
-      }
-
-      .stat {
-        display: block;
-        margin: 0.5rem 0;
-      }
-
-      .publication-links {
-        justify-content: center;
-      }
-    }
-
-    details {
-      margin-top: 1rem;
-    }
-
-    summary {
-      cursor: pointer;
-      color: var(--emory-secondary);
-    }
-
-    details p {
-      margin-top: 0.5rem;
-      padding: 1rem;
-      background: #f7fafc;
-      border-radius: 8px;
-      font-family: monospace;
-      font-size: 0.9rem;
-    }
-  </style>
-</Layout>
-
-// components/PublicationItem.astro
----
-import type { Publication } from '../utils/sanity';
-const { publication } = Astro.props as { publication: Publication };
-
-const formatAuthors = (authors: string[]) => {
-  if (authors.length > 5) {
-    return `${authors.slice(0, 3).join(', ')}, ..., ${authors[authors.length - 1]}`;
   }
-  return authors.join(', ');
-};
----
-<div class="publication-item">
-  <h4>{publication.title}</h4>
-  <p class="authors">{formatAuthors(publication.authors)}</p>
-  <p class="citation">
-    <em>{publication.journal}</em>, {publication.year}
-    {publication.volume && `, ${publication.volume}`}
-    {publication.issue && `(${publication.issue})`}
-    {publication.pages && `: ${publication.pages}`}
-  </p>
-  <div class="links">
-    {publication.doi && <a href={`https://doi.org/${publication.doi}`} target="_blank" class="link-button doi">DOI</a>}
-    {publication.pmid && <a href={`https://pubmed.ncbi.nlm.nih.gov/${publication.pmid}/`} target="_blank" class="link-button pmid">PubMed</a>}
-    {publication.url && <a href={publication.url} target="_blank" class="link-button external">Link</a>}
-  </div>
-</div>
 
-<style>
-.publication-item {
-  background: white;
-  padding: 1.5rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,33,105,0.08);
-  border-left: 4px solid var(--emory-secondary);
-}
-h4 {
-  font-size: 1.1rem;
-  color: var(--emory-primary);
-  margin-bottom: 0.75rem;
-}
-.authors {
-  font-size: 0.9rem;
-  color: #4a5568;
-  margin-bottom: 0.5rem;
-}
-.citation {
-  font-size: 0.9rem;
-  color: #718096;
-}
-.links {
-  margin-top: 1rem;
-  display: flex;
-  gap: 0.5rem;
-}
-.link-button {
-  padding: 0.25rem 0.75rem;
-  border-radius: 12px;
-  font-size: 0.8rem;
-  text-decoration: none;
-  font-weight: 500;
-  color: white;
-  transition: opacity 0.3s;
-}
-.link-button:hover { opacity: 0.85; }
-.doi { background-color: #f0ad4e; }
-.pmid { background-color: #5bc0de; }
-.external { background-color: #5cb85c; }
+  .error {
+    color: #e53e3e;
+    text-align: center;
+    padding: 2rem;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 33, 105, 0.06);
+  }
+
+  .loading {
+    text-align: center;
+    padding: 2rem;
+    color: var(--emory-primary);
+  }
 </style> 
