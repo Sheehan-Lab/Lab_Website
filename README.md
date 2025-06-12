@@ -1,3 +1,5 @@
+TO MAKE CHANGES TO WEBSITE, SUBMIT A PULL REQUEST
+
 # Astro Starter Kit: Basics
 
 ```sh
