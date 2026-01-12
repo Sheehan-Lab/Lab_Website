@@ -28,7 +28,7 @@ export const teamMember = defineType({
           {title: 'Lab Manager', value: 'lab_manager'},
           {title: 'Faculty & Fellows', value: 'faculty'},
           {title: 'Research Staff', value: 'research_staff'},
-          {title: 'Lab Alumni', value: 'research_staff'},
+          {title: 'Lab Alumni', value: 'lab_alumni'},
         ]
       },
       validation: (Rule) => Rule.required(),
