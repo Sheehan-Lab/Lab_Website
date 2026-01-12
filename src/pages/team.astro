@@ -13,14 +13,15 @@ try {
   console.error('Error fetching team members:', e);
 }
 
-const groupOrder = ['pi', 'lab_manager', 'faculty', 'research_staff'] as const;
+const groupOrder = ['pi', 'lab_manager', 'faculty', 'research_staff', 'lab_alumni'] as const;
+
 const groupTitles = {
   pi: 'Principal Investigator',
   lab_manager: 'Lab Management',
   faculty: 'Faculty & Fellows',
-  research_staff: 'Research Staff'
+  research_staff: 'Research Staff',
+  lab_alumni: 'Lab Alumni'  // <--- The title that will appear on screen
 };
-
 // Group members by their role
 const groupedMembers = groupOrder.reduce((acc, group) => {
   acc[group] = teamMembers.filter(member => member.group === group);
